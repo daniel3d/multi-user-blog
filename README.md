@@ -13,6 +13,8 @@
 ### Stuff used to make this:
 
  * [Markdown Editor](https://jbt.github.io/markdown-editor) For the cool README
- * [Google Cloud SDK](https://cloud.google.com/sdk/docs) To run the app engine 
+ * [Webapp2](https://webapp2.readthedocs.io/en/latest) Python web framework compatible with Google App Engine’s 
+ * [Google App Engine SDK](https://cloud.google.com/appengine/downloads?csw=1) The app engine
+ * [Python Development Server](https://cloud.google.com/appengine/docs/python/tools/using-local-server) To emulate google app engine
  * [PEP8 Autoformat](https://packagecontrol.io/packages/Python%20PEP8%20Autoformat) To format the files in PEP8 requirements
  * [PEP257 checker](https://pypi.python.org/pypi/pep257) Python docstring style checker
