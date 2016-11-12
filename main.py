@@ -4,29 +4,33 @@ import os
 import jinja2
 import webapp2
 
-templates = os.path.join(os.path.dirname(__file__), 'views')
-viewer = jinja2.Environment(loader=jinja2.FileSystemLoader(templates))
+from google.appengine.ext import db
 
-"""Common Handler functionality to extend our controllers."""
+viewer = jinja2.Environment(loader=jinja2.FileSystemLoader(
+	os.path.join(os.path.dirname(__file__), 'views')), autoescape=True)
+
+"""Base Controller functionality we need to reuse."""
 
 
-class Handler(webapp2.RequestHandler):
+class BaseController(webapp2.RequestHandler):
 
     def write(self, *a, **kw):
+    	"""Send response to the browser."""
         # self.request
-        #self.response.headers['Content-Type'] = 'text/plain'
+        # self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write(*a, **kw)
 
     def view(self, template, **params):
+    	"""Render template with given varibles."""
         view = viewer.get_template(template)
         self.write(view.render(params))
 
-"""Home Page Controller."""
+"""Home Controller."""
 
 
-class HomePage(Handler):
+class HomeController(BaseController):
 
     def get(self):
         self.view('home.html', message="Hello, Daniel")
 
-app = webapp2.WSGIApplication([('/', HomePage)], debug=True)
+app = webapp2.WSGIApplication([('/', HomeController)], debug=True)
