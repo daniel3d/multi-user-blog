@@ -7,8 +7,8 @@
  * First make sure you have installed [Google Cloud SDK](https://cloud.google.com/sdk/docs)
  * To get App engine for python run `gcloud components install app-engine-python`
  * When in root folder run `dev_appserver.py --port=9999 app.yaml` 
- * Open your web browser and go to http://localhost:8000 for admin panel
- * Or http://localhost:9999 for the app
+ * Open your web browser and go to [http://localhost:8000](http://localhost:8000) for admin panel
+ * Or [http://localhost:9999](http://localhost:9999) for the app
 
 ### Stuff used to make this:
 
