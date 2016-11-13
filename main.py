@@ -31,6 +31,6 @@ class BaseController(webapp2.RequestHandler):
 class HomeController(BaseController):
 
     def get(self):
-        self.view('home.html', message="Hello, Daniel")
+        self.view('post.html', message="Hello, Daniel")
 
 app = webapp2.WSGIApplication([('/', HomeController)], debug=True)
