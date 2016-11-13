@@ -12,7 +12,7 @@
 
 ### Stuff used to make this:
 
- * [Markdown Editor](https://jbt.github.io/markdown-editor) For the cool README
+ * [Simple Markdown Editor](https://simplemde.com) The blog edit page
  * [Webapp2](https://webapp2.readthedocs.io/en/latest) Python web framework compatible with Google App Engine’s 
  * [Google App Engine SDK](https://cloud.google.com/appengine/downloads?csw=1) The app engine
  * [Python Development Server](https://cloud.google.com/appengine/docs/python/tools/using-local-server) To emulate google app engine

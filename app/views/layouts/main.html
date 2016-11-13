@@ -10,8 +10,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Share+Tech+Mono">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
     <!--build:css css/styles.min.css-->
-    <link rel="stylesheet" href="/static/vendor/flexboxgrid.css">
     <link rel="stylesheet" href="/static/css/compiled/styles.css">
     <!--endbuild-->
 </head>
@@ -62,6 +65,16 @@
     </div>
 
     <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+
+    <!--build:js js/main.min.js -->
+    <script src="/static/js/main.js"></script>
+    <!-- endbuild -->
+
+    <script>
+        var simplemde = new SimpleMDE({ 
+            element: document.getElementById("code")
+        });
+    </script>
 </body>
 
 </html>

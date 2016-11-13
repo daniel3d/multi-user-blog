@@ -6,7 +6,9 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-livereload": "^3.8.1",
-    "gulp-sass": "^2.0.1"
+    "gulp-open": "^2.0.0",
+    "gulp-sass": "^2.0.1",
+    "simplemde": "^1.11.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,5 +22,7 @@
   "bugs": {
     "url": "https://github.com/daniel3d/multi-user-blog/issues"
   },
-  "homepage": "https://github.com/daniel3d/multi-user-blog#readme"
+  "homepage": "https://github.com/daniel3d/multi-user-blog#readme",
+  "dependencies": {
+  }
 }
