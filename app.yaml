@@ -11,5 +11,8 @@ libraries:
   version: latest
 
 handlers:
+- url: /static
+  static_dir: app/static
+
 - url: /.*
-  script: main.app
+  script: app.application

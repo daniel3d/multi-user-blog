@@ -1,1 +1,7 @@
 *.pyc
+app/*.pyc
+node_modules
+npm-debug.log
+npm-debug.log.*
+app/static/vendor/*
+app/static/css/compiled/*

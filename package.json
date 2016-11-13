@@ -1,0 +1,24 @@
+{
+  "name": "multi-user-blog",
+  "version": "0.0.1",
+  "description": "Udacity Build Multi User Blog",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-sass": "^2.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel3d/multi-user-blog.git"
+  },
+  "author": "Daniel Yovchev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daniel3d/multi-user-blog/issues"
+  },
+  "homepage": "https://github.com/daniel3d/multi-user-blog#readme"
+}
