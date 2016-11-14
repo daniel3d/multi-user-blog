@@ -10,9 +10,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Share+Tech+Mono">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+
+    <!--build:js js/main.min.js -->
+    <script src="/static/js/main.js"></script>
+    <!-- endbuild -->
 
     <!--build:css css/styles.min.css-->
     <link rel="stylesheet" href="/static/css/compiled/styles.css">
@@ -41,17 +47,11 @@
           </div>
         </header>
 
-        <!-- Add image to the the blog -->
-        <div class="ribbon" style="{{ ribbon }}"></div>
+ 
+        <!-- render content block -->
+        {% block content %} {% endblock %}
+        <!-- end content block -->
 
-
-        <main class="mdl-layout__content">
-            <div class="container mdl-grid">
-                <!-- render content block -->
-                {% block content %} {% endblock %}
-                <!-- end content block -->
-            </div>
-        </main>
 
         <footer class="mdl-mini-footer">
             <div class="mdl-mini-footer--right-section">
@@ -63,18 +63,6 @@
         </footer>
 
     </div>
-
-    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
-
-    <!--build:js js/main.min.js -->
-    <script src="/static/js/main.js"></script>
-    <!-- endbuild -->
-
-    <script>
-        var simplemde = new SimpleMDE({ 
-            element: document.getElementById("code")
-        });
-    </script>
 </body>
 
 </html>

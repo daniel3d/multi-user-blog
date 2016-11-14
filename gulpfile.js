@@ -62,7 +62,7 @@ gulp.task('server', function(cb){
 	});
 
 	gulp.src(__filename)
-		.pipe(open({uri: 'http://localhost:8000'}))
+		.pipe(open({uri: 'http://localhost:8000/instances'}))
 		.pipe(open({uri: 'http://localhost:9999'}));
 
 });

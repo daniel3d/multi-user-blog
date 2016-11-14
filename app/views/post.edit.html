@@ -1,0 +1,69 @@
+{% extends "layouts/main.html" %} 
+
+
+{% block content %}
+
+	<!-- Add image to the the blog -->
+	<div class="ribbon" style="background-color: #795548;"></div>
+
+	<main class="mdl-layout__content">
+		<div class="container mdl-grid">
+
+		 	<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+		 	<!-- The post editor -->
+			<div class="ulog-editor content mdl-color--white mdl-shadow--4dp mdl-color-text--grey-800 mdl-cell mdl-cell--8-col" style="padding: 0px;">
+				<form action="" method="post" accept-charset="utf-8">
+					<!-- Store for the edditor -->
+					<textarea name="markdown">{{ post.markdown }}</textarea>
+					<input name="ribbon" type="hidden" value="{{ post.ribbon }}" />
+					<input name="content" type="hidden" value="{{ post.content }}" />
+					<input name="title" type="hidden" value="{{ post.title }}" />
+					<!-- Accent-colored raised button with ripple -->
+					<pre>{{ error }}</pre>
+					<button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+						Submit
+					</button>
+				</form>
+			</div>
+
+
+			<script>
+
+				var simplemde = new SimpleMDE({ 
+					element: $("textarea[name='markdown']")[0], 
+					spellChecker: false,
+					placeholder: "# My Heading Title - *You are required to use at least one h1 heading \n\n"+ 
+					"![ribbon](https://s.yimg.com/uy/build/images/sohp/hero/lax-den3.jpg) (This will update the ribbon)",
+				});
+
+				var save = function() {
+					var content = $('<div></div>').append(simplemde.options.previewRender(simplemde.value()));
+					var title = content.find("h1").first();
+					var ribbon = content.find("img[alt='ribbon']").first();
+
+					if(title.length > 0) {
+						// make sure we return error
+						$("input[name='title'").val(title.text());
+						title.remove();
+					}
+
+					if(ribbon.length > 0) {
+						$("input[name='ribbon'").val(ribbon.attr('src'));
+						ribbon.parent().remove();
+					}
+
+					$("input[name='content'").val(content.html());
+				}
+
+				// Save the post...
+				$("#submit").click(function(e){ 
+					//e.preventDefault(); 
+					save(); 
+				});
+
+			</script>
+		</div>
+	</main>
+
+{% endblock %}
