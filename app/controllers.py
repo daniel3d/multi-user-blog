@@ -64,14 +64,15 @@ class PostNew(Controller):
         self.view('post.edit.html', post=())
 
     def post(self):
-        post = Post(markdown=self.request.get('markdown'))
+        post = Post()
         post.title = self.request.get('title')
-        post.content = self.request.get('content') 
         post.slug = slugify(post.title)
+        post.ribbon = self.request.get('ribbon')
+        post.markdown = self.request.get('markdown')
+        post.content = self.request.get('content') 
         post.put()
 
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
-
         # error = "title, content or markdown not set!"
         # self.view('post.edit.html', error=error, title=title,
         #  markdown=markdown, content=content)
@@ -82,9 +83,26 @@ class PostEdit(PostNew):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
-        # We cannot find post in the database...
+
         if not post:
             self.error(404)
             return
 
         self.view('post.edit.html', post=post)
+
+    def post(self, post_id):
+        key = db.Key.from_path('Post', int(post_id))
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        post.title = self.request.get('title')
+        post.slug = slugify(post.title)
+        post.ribbon = self.request.get('ribbon')
+        post.markdown = self.request.get('markdown')
+        post.content = self.request.get('content')
+        post.put()
+
+        self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))

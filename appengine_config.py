@@ -2,6 +2,7 @@
 from google.appengine.ext import vendor
 
 """ Include 3th party libraries
-	TO install: > pip install -t lib python-slugify
+	make sure you run first
+	pip install -t lib -r requirements.txt
 """
 vendor.add('lib')

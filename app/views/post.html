@@ -4,7 +4,11 @@
 {% block content %}
 
   <!-- Add image to the the blog -->
-  <div class="ribbon" style="background:url(https://s.yimg.com/uy/build/images/sohp/hero/lax-den3.jpg) no-repeat center center fixed;"></div>
+  {% if post.ribbon %}
+    <div class="ribbon" style="background-image: url({{ post.ribbon }})"></div>
+  {% else %}
+    <div class="ribbon"></div>
+  {% endif %}
 
   <main class="mdl-layout__content">
     <div class="container mdl-grid">
@@ -16,7 +20,7 @@
           Posted by: Daniel Yovchev
         </div>
         <h1>{{ post.title }}</h1>
-
+        <hr>
         {{ post.content | safe }}
 
        </div>

@@ -1,3 +1,7 @@
+img {
+  max-width: 100%;
+}
+
 .ribbon {
   width: 100%;
   height: 400px;
@@ -57,16 +61,9 @@ footer .mdl-mini-footer--link-list a {
   margin-top: 48px;
 }
 
-.ribbon {
-    -webkit-background-size: cover !important;
-    -moz-background-size: cover !important;
-    -o-background-size: cover !important;
-    background-size: cover !important;
-}
-
-
 .ulog-editor {
-  
+
+  padding: 0px !important;
   position:relative;
 
   #submit {
@@ -87,4 +84,18 @@ footer .mdl-mini-footer--link-list a {
     width: 100%; 
   }
 
+}
+
+.ribbon {
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+
+    background-position: no-repeat center center fixed;
+}
+
+
+.ribbon.editor {
+  background-color: #795548;
 }
