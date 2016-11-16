@@ -47,8 +47,9 @@ gulp.task('server', function(cb){
 			.yellow(data.toString().trim()));
 	});
 	server.stdout.on('data', function (data) {
+		console.log(data);
 		gutil.log(gutil.colors
-			.yellow(data.toString().trim()));
+			.yellow(data.toString()));
 	});
 	server.on('close', function(code) {
 		gutil.beep();

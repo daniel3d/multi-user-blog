@@ -14,5 +14,3 @@ __version__ = '0.0.1'
 
 # Start the app
 application = webapp2.WSGIApplication(router.ROUTES, debug=True)
-
-

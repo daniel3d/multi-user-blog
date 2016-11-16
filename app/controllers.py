@@ -4,6 +4,9 @@ import os
 import jinja2
 import webapp2
 
+import logging
+from pprint import pprint
+
 from models import Post
 from slugify import slugify
 from google.appengine.ext import db
@@ -44,7 +47,8 @@ class PostIndex(Controller):
     def get(self, post_id, slug=False):
         key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
-
+        #logging.info("------------------------")
+        #logging.info(post.to_xml())
         # We cannot find post in the database...
         if not post:
             self.error(404)
@@ -69,7 +73,7 @@ class PostNew(Controller):
         post.slug = slugify(post.title)
         post.ribbon = self.request.get('ribbon')
         post.markdown = self.request.get('markdown')
-        post.content = self.request.get('content') 
+        post.content = self.request.get('content')
         post.put()
 
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
@@ -81,6 +85,8 @@ class PostNew(Controller):
 class PostEdit(PostNew):
 
     def get(self, post_id):
+        post = Post()
+        #post.get_by_id(int(post_id))
         key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
 
