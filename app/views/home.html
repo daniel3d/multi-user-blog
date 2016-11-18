@@ -1,5 +1,66 @@
 {% extends "layouts/main.html" %} 
 
 {% block content %}
-	<h1>{{ message }}</h1> 
+
+<!-- Wide card with share menu button -->
+<style>
+	.demo-card-wide.mdl-card {
+		width: 100%;
+		margin-bottom: 25px;
+	}
+	.demo-card-wide > .mdl-card__title {
+		color: #fff;
+		height: 245px;
+		background-color: #795548;
+	}
+	.demo-card-wide > .mdl-card__menu {
+		color: #fff;
+	}
+</style>
+
+	<div class="ribbon"></div>
+
+  <main class="mdl-layout__content">
+    <div class="container mdl-grid">
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+      <div class="content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col" style="padding: 0px;">
+	
+  {% for post in posts %}
+	<div class="demo-card-wide mdl-card mdl-shadow--4dp">
+		{% if post.ribbon %}
+			<div class="mdl-card__title" style="background: url('{{ post.ribbon }}') center / cover;">
+		{% else %}
+			<div class="mdl-card__title">
+		{% endif %}
+
+			<h2 class="mdl-card__title-text">
+				{{ post.title }} - {{post.created_at.strftime("%b %d, %Y")}}
+			</h2>
+			
+		</div>
+		<div class="mdl-card__supporting-text">
+			{{ post.content | safe }}
+		</div>
+		<div class="mdl-card__actions mdl-card--border">
+			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/post/{{
+			post.key().id() }}/edit">
+				Edit
+			</a>
+		</div>
+		<div class="mdl-card__menu">
+			<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+				<i class="material-icons">share</i>
+			</button>
+		</div>
+	</div>
+  {% endfor %}
+
+
+       </div>
+
+    </div>
+  </main>
+
 {% endblock %}

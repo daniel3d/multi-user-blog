@@ -1,13 +1,11 @@
 # controllers.py
 
-# for debuging only
-import logging
-from pprint import pprint
-
-# General imports
 import webapp2
+import logging
+
 from models import Post
 from slugify import slugify
+from webapp2_extras import sessions
 from google.appengine.ext import db
 from support import viewer, helpers, config
 
@@ -24,7 +22,31 @@ class Controller(webapp2.RequestHandler):
     def view(self, template, **params):
         """Render template with given varibles."""
         view = viewer.get_template(template)
-        self.write(view.render(params))
+        self.write(view.render(params, messages=self.flash_messages))
+
+    def dispatch(self):
+        """Get a session store for this request."""
+        self.session_store = sessions.get_store(request=self.request)
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+        """Returns a session using the default cookie key."""
+        return self.session_store.get_session()
+
+    @webapp2.cached_property
+    def flash_messages(self):
+        """Implement flash messages."""
+        return self.session.get_flashes(key='_messages')
+
+    def flash(self, message, level='warning'):
+        """Flash message."""
+        self.session.add_flash(message, level, key='_messages')
 
     def set_secure_cookie(self, name, val):
         """Set secure cookie."""
@@ -52,105 +74,90 @@ class Controller(webapp2.RequestHandler):
 class HomeIndex(Controller):
 
     def get(self):
-        logging.info(helpers.make_secure_value('test'))
-        self.view('post.html', post=())
+        """Display most reacent posts."""
+        # logging.info(helpers.make_secure_value('test'))
+        posts = Post.all().order('-created_at')
+        self.view('home.html', posts=posts)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""Post Controller."""
+"""Base controller for posts."""
 
 
 class PostIndex(Controller):
 
-    def get(self, post_id, slug=False):
-        key = db.Key.from_path('Post', int(post_id))
-        post = db.get(key)
-        #logging.info("------------------------")
-        #logging.info(post.to_xml())
+    def get(self, id, slug=False):
+        """Display existing post."""
+        post = self.get_post_by_id(id)
         # We cannot find post in the database...
         if not post:
             self.error(404)
             return
-
         # If no slug redirect to the full slug url...
         if slug is False:
-            self.redirect('/post/%s/%s' % (str(post_id), str(post.slug)))
-
+            self.redirect('/post/%s/%s' % (str(id), str(post.slug)))
         # Let display the post...
         self.view('post.html', post=post)
 
+    def get_post_by_id(self, post_id):
+        """Commonly used function to retrive post by id."""
+        return db.get(db.Key.from_path('Post', int(post_id)))
 
-class PostNew(Controller):
+"""Create new post."""
+
+
+class PostNew(PostIndex):
 
     def get(self):
+        """Get the new post form."""
         self.view('post.edit.html', post=())
 
     def post(self):
         """Save new Post to the database. """
-
-        post = {
+        p = {
             "title": self.request.get('title').strip(),
             "slug": slugify(self.request.get('title')),
-            "ribbon": self.request.get('ribbon').strip(),
+            "ribbon": self.request.get('ribbon'),
             "markdown": self.request.get('markdown').strip(),
             "content": self.request.get('content').strip()
         }
-
-        try: # Try saving the post
-            s_post = Post(markdown=post["markdown"], content=post["content"], 
-                ribbon=post["ribbon"], title=post["title"], slug=post["slug"])
-            s_post.put()
+        try:  # Try saving the post
+            post = Post(ribbon=p["ribbon"], markdown=p["markdown"],
+                        title=p["title"], content=p["content"], slug=p["slug"])
+            post.put()
         except Exception, error:
-            self.view('post.edit.html', errors=[str(error)], post=post)
+            self.flash(str(error), 'error')
+            self.view('post.edit.html', post=p)
             return
-
+        self.flash('Well done my friend! Post: %s was saved.' % post.title,
+                   'success')
         # Redirect to the new post page
-        self.redirect('/post/%s/%s' % (str(s_post.key().id()), s_post.slug))
+        self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
+        return
+
+"""Update existing post."""
+
 
 class PostEdit(PostNew):
 
-    def get(self, post_id):
-        post = Post()
-        #post.get_by_id(int(post_id))
-        key = db.Key.from_path('Post', int(post_id))
-        post = db.get(key)
-
+    def get(self, id):
+        """Open edit form for the the post."""
+        post = self.get_post_by_id(id)
         if not post:
             self.error(404)
             return
-
         self.view('post.edit.html', post=post)
 
-    def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id))
-        post = db.get(key)
-
+    def post(self, id):
+        """Submit the eddited post."""
+        post = self.get_post_by_id(id)
         if not post:
             self.error(404)
             return
-
-        post.title = self.request.get('title')
-        post.slug = slugify(post.title)
-        post.ribbon = self.request.get('ribbon')
-        post.markdown = self.request.get('markdown')
-        post.content = self.request.get('content')
+        post.title = self.request.get('title').strip()
+        post.slug = slugify(post.title).strip()
+        post.ribbon = self.request.get('ribbon').strip()
+        post.markdown = self.request.get('markdown').strip()
+        post.content = self.request.get('content').strip()
         post.put()
-
+        self.flash('Well done my friend! Post: %s was updated.' % post.title,
+                   'success')
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))

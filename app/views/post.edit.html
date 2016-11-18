@@ -30,10 +30,6 @@
 				</form>
 			</div>
 
-			{% if error %}
-				<pre>{{ error }}</pre>
-			{% endif %}
-
 			<script>
 
 				var addnewline = function(cm, text, startOnNewLine, pos){
@@ -109,7 +105,9 @@
 					placeholder: "***You must use at least one h1 heading \n"+ 
 					"# Subject/Title *required* \n\n"+ 
 					"***Set this to add background to your post \n"+
-					"![ribbon](https://s.yimg.com/uy/build/images/sohp/hero/lax-den3.jpg)",
+					"![ribbon](https://s.yimg.com/uy/build/images/sohp/hero/lax-den3.jpg)\n\n"+
+					"***Here write your awsome post \n"+
+					"## Content *required*",
 					previewRender: function(plainText) {
 						return preperehtml(plainText);
 					},

@@ -34,9 +34,11 @@
         <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-800">
           <div class="mdl-layout__header-row">
             <!-- Logo -->
-            <span class="logo mdl-layout-title">
-              ulog <i class="material-icons">&#xE618;</i>
-            </span>
+            <a href="/">
+                <span class="logo mdl-layout-title">
+                    ulog <i class="material-icons">&#xE618;</i>
+                </span>
+            </a>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation -->
@@ -63,12 +65,18 @@
         </footer>
 
         <script>
+            // Flash messages.
             $(function(){
                 toastr.options.positionClass = "toast-top-center";
-                {% if errors %}
-                    {% for error in errors %}
-
-                        toastr.error('{{ error }}');
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message[1] == 'error' %}
+                            toastr.error('{{ message[0] }}');
+                        {% elif message[1] == 'success' %}
+                            toastr.success('{{ message[0] }}');
+                        {% else %}
+                            toastr.warning('{{ message[0] }}');
+                        {% endif %}            
                     {% endfor %}
                 {% endif %}
             });
