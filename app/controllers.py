@@ -1,5 +1,6 @@
 # controllers.py
 
+import time
 import webapp2
 import logging
 
@@ -78,6 +79,7 @@ class HomeIndex(Controller):
         # logging.info(helpers.make_secure_value('test'))
         posts = Post.all().order('-created_at')
         self.view('home.html', posts=posts)
+        return
 
 """Base controller for posts."""
 
@@ -109,6 +111,7 @@ class PostNew(PostIndex):
     def get(self):
         """Get the new post form."""
         self.view('post.edit.html', post=())
+        return
 
     def post(self):
         """Save new Post to the database. """
@@ -127,7 +130,7 @@ class PostNew(PostIndex):
             self.flash(str(error), 'error')
             self.view('post.edit.html', post=p)
             return
-        self.flash('Well done my friend! Post: %s was saved.' % post.title,
+        self.flash('Well done my friend! Post: %s was Saved.' % post.title,
                    'success')
         # Redirect to the new post page
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
@@ -145,6 +148,7 @@ class PostEdit(PostNew):
             self.error(404)
             return
         self.view('post.edit.html', post=post)
+        return
 
     def post(self, id):
         """Submit the eddited post."""
@@ -158,6 +162,17 @@ class PostEdit(PostNew):
         post.markdown = self.request.get('markdown').strip()
         post.content = self.request.get('content').strip()
         post.put()
-        self.flash('Well done my friend! Post: %s was updated.' % post.title,
+        self.flash('Well done my friend! Post: %s was Updated.' % post.title,
                    'success')
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
+        return
+
+class PostDelete(PostIndex):
+
+    def get(self, id):
+        post = self.get_post_by_id(id)
+        post.delete()
+        self.flash('Post: %s was Deleted.' % post.title, 'warning')
+        time.sleep(0.5)
+        self.redirect('/')
+        return

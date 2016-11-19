@@ -1,0 +1,71 @@
+# Across Hodge Close (In Explore)
+
+![ribbon](//c5.staticflickr.com/6/5669/22828893668_e436392a8c_b.jpg)
+
+## Lorem Ipsum
+
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+
+![](//c4.staticflickr.com/6/5573/30555097011_da9181aba4_h.jpg)
+
+![Dave](//c1.staticflickr.com/6/5794/31019763376_82ef06fe4a_h.jpg)
+
+---
+
+ [Dave Fieldhouse](https://www.flickr.com/photos/penguindave) Copyright Dave Fieldhouse Photography
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+# Autumn in the forests (Mark III)
+![ribbon](//c5.staticflickr.com/6/5585/30598402132_5efe19d208_k.jpg)
+
+![](//c3.staticflickr.com/6/5788/30692878746_200359298d_k.jpg)
+
+![](//c7.staticflickr.com/6/5322/30612936102_bb71c67a5c_k.jpg)
+
+#### Nullam sit amet erat non elit tempor sollicitudin mattis at diam.
+* Lorem ipsum dolor sit amet, [consectetur](http://) adipiscing elit. 
+* Nam aliquet erat at rhoncus dictum. 
+* Ut ac tortor non eros [porttitor](http://) maximus posuere in leo. 
+* Donec ullamcorper hendrerit eros, id finibus diam tincidunt eget.
+* Quisque tempor placerat tellus eget gravida. 
+* Suspendisse vel erat neque. 
+* Curabitur id sapien et nisl blandit [consequat](http://) eu id nibh.
+* [Nullam](http://) elit ante, porta vitae auctor vel, aliquet vel tortor.
+*  Maecenas id nunc nisl.
+
+---
+
+[Mark Letheren](https://www.flickr.com/photos/iammarkletheren) Copyright Mark Letheren Photography
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+# Multi User Blog
+![ribbon](//c5.staticflickr.com/1/625/22658279332_3a1fbc8bb0_k.jpg)
+
+### For Udacity Full Stack Web Developer Nanodegree
+
+##### Installation instructions
+
+ * First make sure you have installed [Google Cloud SDK](https://cloud.google.com/sdk/docs)
+ * To get App engine for python run `gcloud components install app-engine-python`
+ * When in root folder run `dev_appserver.py --port=9999 app.yaml` 
+ * Open your web browser and go to [http://localhost:8000](http://localhost:8000) for admin panel
+ * Or [http://localhost:9999](http://localhost:9999) for the app
+
+![lax den](https://s.yimg.com/uy/build/images/sohp/hero/lax-den3.jpg)
+
+### Stuff used to make this:
+
+ * [Simple Markdown Editor](https://simplemde.com) The blog edit page
+ * [Webapp2](https://webapp2.readthedocs.io/en/latest) Python web framework compatible with Google App Engine’s 
+ * [Google App Engine SDK](https://cloud.google.com/appengine/downloads?csw=1) The app engine
+ * [Python Development Server](https://cloud.google.com/appengine/docs/python/tools/using-local-server) To emulate google app engine
+ * [PEP8 Autoformat](https://packagecontrol.io/packages/Python%20PEP8%20Autoformat) To format the files in PEP8 requirements
+ * [PEP257 checker](https://pypi.python.org/pypi/pep257) Python docstring style checker
+
+If it helps at all, I tried adding a parameter to replaceRange to prevent it from adding to the history. I am not sure that I did it correctly or according to your conventions, but this is the general idea. Thanks again for the quick responses and comments. Sorry if I am being a bother.

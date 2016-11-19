@@ -43,10 +43,16 @@
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation -->
             <nav class="mdl-navigation">
-              <a class="mdl-navigation__link mdl-color-text--grey-800" href="">Link</a>
-              <a class="mdl-navigation__link mdl-color-text--grey-800" href="">Link</a>
-              <a class="mdl-navigation__link mdl-color-text--grey-800" href="">Link</a>
-              <a class="mdl-navigation__link mdl-color-text--grey-800" href="">Link</a>
+                <a id="user-dropdown" class="mdl-navigation__link mdl-js-button mdl-color-text--grey-800">
+                    <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="♥">account_box</div> Daniel Yovchev
+                </a>
+                <ul class="mdl-menu mdl-menu--bottom mdl-js-menu mdl-js-ripple-effect"
+                    for="user-dropdown">
+                  <li class="mdl-menu__item">Some Action</li>
+                  <li class="mdl-menu__item">Another Action</li>
+                  <li disabled class="mdl-menu__item">Disabled Action</li>
+                  <li class="mdl-menu__item">Yet Another Action</li>
+                </ul>
             </nav>
           </div>
         </header>

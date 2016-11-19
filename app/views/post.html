@@ -4,11 +4,7 @@
 {% block content %}
 
   <!-- Add image to the the blog -->
-  {% if post.ribbon %}
-    <div class="ribbon" style="background-image: url({{ post.ribbon }})"></div>
-  {% else %}
-    <div class="ribbon"></div>
-  {% endif %}
+  <div class="ribbon" {{ post.get_ribbon_style() | safe }}></div>
 
   <main class="mdl-layout__content">
     <div class="container mdl-grid">

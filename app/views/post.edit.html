@@ -5,7 +5,7 @@
 
 	<!-- Add image to the the blog -->
 	{% if post.ribbon %}
-		<div class="ribbon editor" style="background-image: url({{ post.ribbon }})"></div>
+		<div class="ribbon editor" {{ post.get_ribbon_style() | safe }}></div>
 	{% else %}
 		<div class="ribbon editor" style="background-color: #795548;"></div>
 	{% endif %}

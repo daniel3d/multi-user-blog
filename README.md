@@ -13,6 +13,8 @@
 
 ### Stuff used to make this:
 
+https://qrohlf.com/trianglify-generator/
+
  * [Simple Markdown Editor](https://simplemde.com) The blog edit page
  * [Webapp2](https://webapp2.readthedocs.io/en/latest) Python web framework compatible with Google App Engine’s 
  * [Google App Engine SDK](https://cloud.google.com/appengine/downloads?csw=1) The app engine
