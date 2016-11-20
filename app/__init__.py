@@ -1,8 +1,7 @@
 # coding: utf-8
 
 import router
-import webapp2
-from support import config
+from support import webapp2, config
 
 """
 gae-init

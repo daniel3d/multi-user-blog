@@ -130,7 +130,7 @@ main {
 
 .content {
   border-radius: 2px;
-  padding: 0px
+  padding: 0px;
   margin-bottom: 80px;
 }
 
@@ -227,4 +227,10 @@ footer .mdl-mini-footer--link-list a {
     width: 100%; 
   }
 
+}
+
+// Posts
+
+article.single-post {
+  padding: 80px 56px;
 }

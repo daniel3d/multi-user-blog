@@ -7,7 +7,7 @@
 			<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
 			<div class="content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
 				{% for post in posts %}
-					<div class="ulog-card-wide mdl-card mdl-shadow--4dp">
+					<article class="ulog-card-wide mdl-card mdl-shadow--4dp">
 						<a href="/post/{{post.key().id()}}/{{ post.slug }}" class="mdl-card__title" {{ post.get_ribbon_style() | safe }}>
 							<h2 class="mdl-card__title-text">{{ post.title }}</h2>
 						</a>
@@ -40,7 +40,7 @@
 							</ul>
 
 						</div>
-					</div>
+					</article>
 				{% endfor %}
 			</div>
 		</div>

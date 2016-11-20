@@ -4,6 +4,9 @@ import controllers as ctr
 
 ROUTES = [
     ('/', ctr.HomeIndex),
+    ('/login', ctr.LoginIndex),
+    ('/logout', ctr.LogoutIndex),
+    ('/register', ctr.RegisterIndex),
     ('/post/new', ctr.PostNew),
     ('/post/([0-9]+)', ctr.PostIndex),
     ('/post/([0-9]+)/edit', ctr.PostEdit),

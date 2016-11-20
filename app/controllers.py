@@ -1,13 +1,7 @@
 # controllers.py
 
-import time
-import webapp2
-
-from models import Post
-from slugify import slugify
-from webapp2_extras import sessions
-from google.appengine.ext import db
-from support import viewer, helpers, config
+from models import db, Post, User
+from support import viewer, helpers, config, slugify, sessions, webapp2, time
 
 """Base Controller functionality we need to reuse."""
 
@@ -58,14 +52,6 @@ class Controller(webapp2.RequestHandler):
         """Read secure cookie."""
         cookie_val = self.request.cookies.get(name)
         return cookie_val and helpers.check_secure_value(cookie_val)
-
-    def login(self, user):
-        """Login the user by setting up a secure cookie."""
-        self.set_secure_cookie('user_id', str(user.key().id()))
-
-    def logout(self):
-        """Logout the user by removing the secure cookie."""
-        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
 """Home Controller."""
 
@@ -175,4 +161,104 @@ class PostDelete(PostIndex):
         self.flash('Post: %s was Deleted.' % post.title, 'warning')
         time.sleep(0.5)
         self.redirect('/')
+        return
+
+"""Base controller for Auth functionality."""
+
+
+class AuthIndex(Controller):
+
+    def login(self, user):
+        """Login the user by setting up a secure cookie."""
+        self.set_secure_cookie('user_id', str(user.key().id()))
+
+    def logout(self):
+        """Logout the user by removing the secure cookie."""
+        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+
+    def valid_username(username):
+        """Check if the username is valid."""
+        return username and config.REGEXR_USERNAME.match(username)
+
+    def valid_password(password):
+        """Check if the password is valid."""
+        return password and config.REGEXR_PASSWORD.match(password)
+
+    def valid_email(email):
+        """Check if the email is valid."""
+        return not email or config.REGEXR_EMAIL.match(email)
+
+"""Login page."""
+
+
+class LoginIndex(AuthIndex):
+
+    def get(self):
+        self.view('login.html')
+        return
+
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+
+        u = User.login(username, password)
+        if u:
+            self.login(u)
+            self.redirect('/blog')
+        else:
+            msg = 'Invalid login'
+            self.render('login-form.html', error=msg)
+
+"""Register page."""
+
+
+class RegisterIndex(AuthIndex):
+
+    def get(self):
+        self.view('register.html')
+
+    def post(self):
+        have_error = False
+        username = self.request.get('username')
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        email = self.request.get('email')
+
+        params = dict(username=username, email=email)
+
+        if User.by_name(username):
+            msg = 'That user already exists.'
+            self.view('register.html', error_username=msg)
+
+        if not valid_username(username):
+            params['error_username'] = "That's not a valid username."
+            have_error = True
+
+        if not valid_password(password):
+            params['error_password'] = "That wasn't a valid password."
+            have_error = True
+        elif password != verify:
+            params['error_verify'] = "Your passwords didn't match."
+            have_error = True
+
+        if not valid_email(email):
+            params['error_email'] = "That's not a valid email."
+            have_error = True
+
+        if have_error:
+            self.view('register.html', **params)
+        else:
+            u = User.register(username, password, email)
+            u.put()
+            self.login(u)
+            self.redirect('/')
+
+"""Logout page."""
+
+
+class LogoutIndex(AuthIndex):
+
+    def post(self):
+        self.logout()
+        self.redirect('/login')
         return
