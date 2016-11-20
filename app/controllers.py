@@ -2,7 +2,6 @@
 
 import time
 import webapp2
-import logging
 
 from models import Post
 from slugify import slugify
@@ -17,7 +16,6 @@ class Controller(webapp2.RequestHandler):
 
     def write(self, *a, **kw):
         """Send response to the browser."""
-        # self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write(*a, **kw)
 
     def view(self, template, **params):
@@ -76,7 +74,6 @@ class HomeIndex(Controller):
 
     def get(self):
         """Display most reacent posts."""
-        # logging.info(helpers.make_secure_value('test'))
         posts = Post.all().order('-created_at')
         self.view('home.html', posts=posts)
         return
@@ -166,6 +163,9 @@ class PostEdit(PostNew):
                    'success')
         self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
         return
+
+"""Delete existing post."""
+
 
 class PostDelete(PostIndex):
 

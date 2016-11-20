@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Show case multi user blog for Udacity Full Stack Web Developer Nanodegree">
+    <meta name="description" content="Show case User blog for Udacity Full Stack Web Developer Nanodegree">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    
     <title>Ulog</title>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Share+Tech+Mono">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
@@ -18,10 +20,6 @@
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
-    <!--build:js js/main.min.js -->
-    <script src="/static/js/main.js"></script>
-    <!-- endbuild -->
-
     <!--build:css css/styles.min.css-->
     <link rel="stylesheet" href="/static/css/compiled/styles.css">
     <!--endbuild-->
@@ -30,29 +28,22 @@
 <body>
     <div class="blog-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
 
-
         <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-800">
           <div class="mdl-layout__header-row">
             <!-- Logo -->
-            <a href="/">
-                <span class="logo mdl-layout-title">
-                    ulog <i class="material-icons">&#xE618;</i>
-                </span>
+            <a href="/" class="logo mdl-layout-title">                
+                ulog <i class="material-icons">&#xE618;</i>
             </a>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation -->
             <nav class="mdl-navigation">
-                <a id="user-dropdown" class="mdl-navigation__link mdl-js-button mdl-color-text--grey-800">
-                    <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="♥">account_box</div> Daniel Yovchev
+                <a href="/" class="mdl-navigation__link mdl-color-text--grey-800">
+                    <div class="material-icons mdl-badge">account_box</div> Daniel Yovchev
                 </a>
-                <ul class="mdl-menu mdl-menu--bottom mdl-js-menu mdl-js-ripple-effect"
-                    for="user-dropdown">
-                  <li class="mdl-menu__item">Some Action</li>
-                  <li class="mdl-menu__item">Another Action</li>
-                  <li disabled class="mdl-menu__item">Disabled Action</li>
-                  <li class="mdl-menu__item">Yet Another Action</li>
-                </ul>
+                <a href="/" class="mdl-navigation__link mdl-color-text--grey-800" id="auth">
+                    Logout
+                </a>
             </nav>
           </div>
         </header>
@@ -65,14 +56,20 @@
             <div class="mdl-mini-footer--right-section">
                 <div class="mdl-layout-spacer"></div>
                 <ul class="mdl-mini-footer--link-list">
-                    <li><span class="logo mdl-layout-title">ulog <i class="material-icons">&#xE618;</i></span></li>
+                    <li>
+                        <span class="logo mdl-layout-title">ulog 
+                            <i class="material-icons">&#xE618;</i>
+                        </span>
+                    </li>
                 </ul>
             </div>
         </footer>
-
-        <script>
-            // Flash messages.
+    
+        
+        <!-- Flash Messages Toast --><script>
             $(function(){
+                "use strict";
+
                 toastr.options.positionClass = "toast-top-center";
                 {% if messages %}
                     {% for message in messages %}
@@ -87,6 +84,10 @@
                 {% endif %}
             });
         </script>
+
+        <!--build:js js/main.min.js -->
+        <script src="/static/js/main.js"></script>
+        <!-- endbuild -->
 
     </div>
 </body>

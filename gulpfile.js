@@ -8,18 +8,6 @@ var gulp = require('gulp'),
     spawn = require('child_process').spawn,
     livereload = require('gulp-livereload');
 
-// Copy vendor libs...
-gulp.task('vendor', function() {
-/*	gulp.src([
-		'node_modules/codemirror/lib/codemirror.css',
-		'node_modules/codemirror/lib/codemirror.js',
-		'node_modules/codemirror/mode/markdown/markdown.js',
-		'node_modules/codemirror/theme/base16-light.css',
-		'node_modules/markdown-it/dist/markdown-it.min.js',
-		'node_modules/markdown-it-footnote/dist/markdown-it-footnote.js'
-	]).pipe(gulp.dest('app/static/vendor'));
-*/});
-
 // Compile sass to css...
 gulp.task('sass', function() {
 	gulp.src('app/static/scss/**/*.scss')
@@ -69,4 +57,4 @@ gulp.task('server', function(cb){
 });
 
 // Run the tasks...
-gulp.task('default', ['vendor', 'server', 'sass', 'watch']);
+gulp.task('default', ['server', 'sass', 'watch']);
