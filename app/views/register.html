@@ -1,51 +1,45 @@
 {% extends "layouts/auth.html" %} 
 
 {% block content %}
-  <div id="login-page" class="row">
-    <div class="col s12 z-depth-6 card-panel">
-      <form class="login-form">
-        <div class="row">
-          <div class="input-field col s12 center">
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-social-person-outline prefix"></i>
-            <input id="username" type="text" class="validate">
-            <label for="username" class="center-align">Username</label>
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-communication-email prefix"></i>
-            <input id="email" type="email" class="validate">
-            <label for="email" class="center-align">Email</label>
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-action-lock-outline prefix"></i>
-            <input id="password" type="password" class="validate">
-            <label for="password">Password</label>
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-action-lock-outline prefix"></i>
-            <input id="password-again" type="password">
-            <label for="password-again">Re-type password</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <a href="register" class="btn waves-effect waves-light col s12">Register Now</a>
-          </div>
-          <div class="input-field col s12">
-            <p class="margin center medium-small sign-up">Already have an account? <a href="login">Login</a></p>
-          </div>
-        </div>
-      </form>
-    </div>
+
+<form method="post">
+  
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label 
+  {% if error_username %} is-invalid {% endif %}">
+    <input class="mdl-textfield__input" type="text" name="username" value="{{username}}">
+    <label class="mdl-textfield__label" for="username">Username</label>
+    <span class="mdl-textfield__error">{{ error_username }}</span>
   </div>
+
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+  {% if error_email %} is-invalid {% endif %}">
+    <input class="mdl-textfield__input" type="text" name="email" value="{{email}}">
+    <label class="mdl-textfield__label" for="email">Email Address</label>
+    <span class="mdl-textfield__error">{{ error_email }}</span>
+  </div>
+
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+  {% if error_password %} is-invalid {% endif %}">
+    <input class="mdl-textfield__input" type="password" name="password">
+    <label class="mdl-textfield__label" for="password">Password</label>
+    <span class="mdl-textfield__error">{{ error_password }}</span>
+  </div>
+
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+  {% if error_password_verify %} is-invalid {% endif %}">
+    <input class="mdl-textfield__input" type="password" name="password-validate">
+    <label class="mdl-textfield__label" for="password-validate">Re-type password</label>
+    <span class="mdl-textfield__error">{{ error_password_verify }}</span>
+  </div>
+
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+    Register Now
+  </button>
+
+  <a href="login" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+    Already have an account?
+  </a>
+</form>
+
 
 {% endblock %}

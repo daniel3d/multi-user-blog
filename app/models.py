@@ -44,10 +44,9 @@ class User(db.Model):
     @classmethod
     def register(cls, name, pw, email=None):
         pw_hash = make_pw_hash(name, pw)
-        return User(parent=users_key(),
-                    name=name,
-                    pw_hash=pw_hash,
-                    email=email)
+        user = User(parent=users_key(), name=name, pw_hash=pw_hash, email=email)
+        user.put()
+        return user
 
     @classmethod
     def login(cls, name, pw):
