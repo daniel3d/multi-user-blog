@@ -1,7 +1,29 @@
 # controllers.py
 
 from models import db, Post, User
-from support import viewer, helpers, config, slugify, sessions, webapp2, time
+from support import viewer, helpers, config, slugify, webapp2, time
+
+from webapp2_extras import auth
+from webapp2_extras import sessions
+
+from webapp2_extras.auth import InvalidAuthIdError
+from webapp2_extras.auth import InvalidPasswordError
+
+
+
+def user_required(handler):
+  """
+    Decorator that checks if there's a user associated with the current session.
+    Will also fail if there's no session present.
+  """
+  def check_login(self, *args, **kwargs):
+    auth = self.auth
+    if not auth.get_user_by_session():
+      self.redirect(self.uri_for('login'), abort=True)
+    else:
+      return handler(self, *args, **kwargs)
+
+  return check_login
 
 """Base Controller functionality we need to reuse."""
 
@@ -69,7 +91,7 @@ class HomeIndex(Controller):
 
 class PostIndex(Controller):
 
-    def get(self, id, slug=False):
+    def get(self, id, slug=None):
         """Display existing post."""
         post = self.get_post_by_id(id)
         # We cannot find post in the database...
@@ -77,8 +99,8 @@ class PostIndex(Controller):
             self.error(404)
             return
         # If no slug redirect to the full slug url...
-        if slug is False:
-            self.redirect('/post/%s/%s' % (str(id), str(post.slug)))
+        if not slug:
+            self.redirect(self.uri_for('post', id=int(id), slug=post.slug))
         # Let display the post...
         self.view('post.html', post=post)
 
@@ -113,10 +135,10 @@ class PostNew(PostIndex):
             self.flash(str(error), 'error')
             self.view('post.edit.html', post=p)
             return
-        self.flash('Well done my friend! Post: %s was Saved.' % post.title,
-                   'success')
+        self.flash('Well done my friend! Post: %s was Saved.' 
+            % post.title, 'success')
         # Redirect to the new post page
-        self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
+        self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
         return
 
 """Update existing post."""
@@ -145,9 +167,10 @@ class PostEdit(PostNew):
         post.markdown = self.request.get('markdown').strip()
         post.content = self.request.get('content').strip()
         post.put()
-        self.flash('Well done my friend! Post: %s was Updated.' % post.title,
-                   'success')
-        self.redirect('/post/%s/%s' % (str(post.key().id()), post.slug))
+        self.flash('Well done my friend! Post: %s was Updated.' 
+            % (post.title), 'success')
+        self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
+
         return
 
 """Delete existing post."""
@@ -160,7 +183,7 @@ class PostDelete(PostIndex):
         post.delete()
         self.flash('Post: %s was Deleted.' % post.title, 'warning')
         time.sleep(0.5)
-        self.redirect('/')
+        self.redirect(self.uri_for('blog'))
         return
 
 """Base controller for Auth functionality."""
@@ -188,31 +211,11 @@ class AuthIndex(Controller):
         """Check if the email is valid."""
         return not email or config.REGEXR_EMAIL.match(email)
 
-"""Login page."""
-
-
-class LoginIndex(AuthIndex):
-
-    def get(self):
-        self.view('login.html')
-        return
-
-    def post(self):
-        username = self.request.get('username')
-        password = self.request.get('password')
-
-        user = User.login(username, password)
-        if user:
-            self.login(user)
-            self.redirect('/')
-        else:
-            message = 'Invalid Username or Password'
-            self.view('login.html', error=message, username=username)
 
 """Register page."""
 
 
-class RegisterIndex(AuthIndex):
+class UserRegisterIndex(AuthIndex):
 
     def get(self):
         self.view('register.html')
@@ -226,9 +229,6 @@ class RegisterIndex(AuthIndex):
 
         params = dict(username=username, email=email)
 
-        if User.by_name(username):
-            self.view('register.html', error_username='Username already taken.')
-        
         if not self.valid_username(username):
             params['error_username'] = "That's not a valid username."
             valid = None
@@ -244,18 +244,49 @@ class RegisterIndex(AuthIndex):
             params['error_email'] = "That's not a valid email."
             valid = None
         
+        if valid:
+            uniques = ['email_address']
+            success, info = User.create_user(username, uniques,
+                email_address=email, password_raw=password, verified=False)
+            if not success and 'username' in info:
+                params['error_username'] = "Username already taken."
+                valid = None
+            if not success and 'email' in info: 
+                params['error_email'] = "That E-mail address is in use."
+                valid = None
+
         if not valid:
             self.view('register.html', **params)
         else:
-            self.login(User.register(username, password, email))
-            self.redirect('/')
+            user_id = info.get_id()
+            token = User.create_signup_token(user_id)
+            verification_url = self.uri_for('auth.verification', operation='v', 
+                id=user_id, token=token, _full=True)
+            
+            self.view('verification.html', username=username, 
+                verification_url=verification_url)
 
-"""Logout page."""
 
 
-class LogoutIndex(AuthIndex):
 
-    def post(self):
-        self.logout()
-        self.redirect('/login')
-        return
+
+
+class UserLoginIndex(AuthIndex):
+    def get(self):
+        self.view('register.html')
+
+class UserLogoutIndex(AuthIndex):
+    def get(self):
+        self.view('register.html')
+
+class UserSetPassword(AuthIndex):
+    def get(self):
+        self.view('register.html')
+
+class UserForgotPassword(AuthIndex): 
+    def get(self):
+        self.view('register.html')
+
+class UserVerification(AuthIndex):
+    def get(self):
+        self.view('register.html')

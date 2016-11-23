@@ -6,7 +6,6 @@ import random
 import jinja2
 import webapp2
 from slugify import slugify
-from webapp2_extras import sessions
 from google.appengine.ext import db
 
 """

@@ -1,15 +1,22 @@
 # router.py
 
 import controllers as ctr
+from support import webapp2
 
 ROUTES = [
-    ('/', ctr.HomeIndex),
-    ('/login', ctr.LoginIndex),
-    ('/logout', ctr.LogoutIndex),
-    ('/register', ctr.RegisterIndex),
-    ('/post/new', ctr.PostNew),
-    ('/post/([0-9]+)', ctr.PostIndex),
-    ('/post/([0-9]+)/edit', ctr.PostEdit),
-    ('/post/([0-9]+)/delete', ctr.PostDelete),
-    ('/post/([0-9]+)/(?P<slug>[+\-\w]+)', ctr.PostIndex)
+ # Blog routers
+ webapp2.Route('/', ctr.HomeIndex, name='blog'),
+ webapp2.Route('/post/new', ctr.PostNew, name='post.new'),
+ webapp2.Route('/post/<id:[0-9]+>', ctr.PostIndex, name='post.find'),
+ webapp2.Route('/post/<id:[0-9]+>/edit', ctr.PostEdit, name='post.edit'),
+ webapp2.Route('/post/<id:[0-9]+>/delete', ctr.PostDelete, name='post.delete'),
+ webapp2.Route('/post/<id:[0-9]+>/<slug:[+\-\w]+>', ctr.PostIndex, name='post'),
+ # Auth routers
+ webapp2.Route('/login', ctr.UserLoginIndex, name='auth.login'),
+ webapp2.Route('/logout', ctr.UserLogoutIndex, name='auth.logout'),
+ webapp2.Route('/register', ctr.UserRegisterIndex, name='auth.register'),
+ webapp2.Route('/password', ctr.UserSetPassword),
+ webapp2.Route('/forgot', ctr.UserForgotPassword, name='auth.forgot'),
+ webapp2.Route('/<operation:v|p>/<id:\d+>-<token:.+>', 
+ 	handler=ctr.UserVerification, name='auth.verification')
 ]

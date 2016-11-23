@@ -1,0 +1,13 @@
+{% extends "layouts/auth.html" %} 
+
+{% block content %}
+
+	<h4>Welcome, {{ username }}</h4>
+
+	<p>
+		Please click the link bellow in order to verify your email address.<br>
+		<small>[ In production we will send email to the user instead of this page ]</small><br>
+		<a href="{{verification_url}}">{{verification_url}}</a>
+	</p>
+
+{% endblock %}

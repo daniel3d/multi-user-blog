@@ -9,6 +9,8 @@ threadsafe: true
 libraries:
 - name: jinja2
   version: latest
+- name: webapp2
+  version: latest
 
 handlers:
 - url: /static
