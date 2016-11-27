@@ -15,7 +15,7 @@ __version__ = '0.0.1'
 application = webapp2.WSGIApplication(router.ROUTES, config={
 	'webapp2_extras.auth': {
     	'user_model': 'models.User',
-    	'user_attributes': ['username']
+    	'user_attributes': ['name']
   	},
     'webapp2_extras.sessions': {
         'secret_key': config.APP_KEY

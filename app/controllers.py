@@ -1,5 +1,7 @@
 # controllers.py
 
+import logging
+
 from models import db, Post, User
 from support import viewer, helpers, config, slugify, webapp2, time
 
@@ -19,7 +21,7 @@ def user_required(handler):
   def check_login(self, *args, **kwargs):
     auth = self.auth
     if not auth.get_user_by_session():
-      self.redirect(self.uri_for('login'), abort=True)
+      self.redirect(self.uri_for('auth.login'), abort=True)
     else:
       return handler(self, *args, **kwargs)
 
@@ -29,6 +31,10 @@ def user_required(handler):
 
 
 class Controller(webapp2.RequestHandler):
+    @webapp2.cached_property
+    def auth(self):
+        """Shortcut to access the auth instance as a property."""
+        return auth.get_auth()
 
     def write(self, *a, **kw):
         """Send response to the browser."""
@@ -80,6 +86,7 @@ class Controller(webapp2.RequestHandler):
 
 class HomeIndex(Controller):
 
+    @user_required
     def get(self):
         """Display most reacent posts."""
         posts = Post.all().order('-created_at')
@@ -91,6 +98,7 @@ class HomeIndex(Controller):
 
 class PostIndex(Controller):
 
+    @user_required
     def get(self, id, slug=None):
         """Display existing post."""
         post = self.get_post_by_id(id)
@@ -113,11 +121,13 @@ class PostIndex(Controller):
 
 class PostNew(PostIndex):
 
+    @user_required
     def get(self):
         """Get the new post form."""
         self.view('post.edit.html', post=())
         return
 
+    @user_required
     def post(self):
         """Save new Post to the database. """
         p = {
@@ -146,6 +156,7 @@ class PostNew(PostIndex):
 
 class PostEdit(PostNew):
 
+    @user_required
     def get(self, id):
         """Open edit form for the the post."""
         post = self.get_post_by_id(id)
@@ -155,6 +166,7 @@ class PostEdit(PostNew):
         self.view('post.edit.html', post=post)
         return
 
+    @user_required
     def post(self, id):
         """Submit the eddited post."""
         post = self.get_post_by_id(id)
@@ -178,6 +190,7 @@ class PostEdit(PostNew):
 
 class PostDelete(PostIndex):
 
+    @user_required
     def get(self, id):
         post = self.get_post_by_id(id)
         post.delete()
@@ -190,14 +203,6 @@ class PostDelete(PostIndex):
 
 
 class AuthIndex(Controller):
-
-    def login(self, user):
-        """Login the user by setting up a secure cookie."""
-        self.set_secure_cookie('user_id', str(user.key().id()))
-
-    def logout(self):
-        """Logout the user by removing the secure cookie."""
-        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
     def valid_username(self, username):
         """Check if the username is valid."""
@@ -247,13 +252,15 @@ class UserRegisterIndex(AuthIndex):
         if valid:
             uniques = ['email_address']
             success, info = User.create_user(username, uniques,
-                email_address=email, password_raw=password, verified=False)
-            if not success and 'username' in info:
-                params['error_username'] = "Username already taken."
-                valid = None
-            if not success and 'email' in info: 
-                params['error_email'] = "That E-mail address is in use."
-                valid = None
+                email_address=email, name=username, password_raw=password, 
+                verified=False)
+            if not success: 
+                if 'auth_id' in info:
+                    params['error_username'] = "Username already taken."
+                    valid = None
+                if 'email_address' in info: 
+                    params['error_email'] = "That E-mail address is in use."
+                    valid = None
 
         if not valid:
             self.view('register.html', **params)
@@ -261,7 +268,7 @@ class UserRegisterIndex(AuthIndex):
             user_id = info.get_id()
             token = User.create_signup_token(user_id)
             verification_url = self.uri_for('auth.verification', operation='v', 
-                id=user_id, token=token, _full=True)
+                user_id=user_id, token=token, _full=True)
             
             self.view('verification.html', username=username, 
                 verification_url=verification_url)
@@ -273,7 +280,7 @@ class UserRegisterIndex(AuthIndex):
 
 class UserLoginIndex(AuthIndex):
     def get(self):
-        self.view('register.html')
+        self.view('login.html')
 
 class UserLogoutIndex(AuthIndex):
     def get(self):
@@ -288,5 +295,41 @@ class UserForgotPassword(AuthIndex):
         self.view('register.html')
 
 class UserVerification(AuthIndex):
-    def get(self):
-        self.view('register.html')
+    def get(self, *args, **kwargs):
+        user = None
+        user_id = kwargs['user_id']
+        signup_token = kwargs['token']
+        verification_type = kwargs['operation']
+
+        # it should be something more concise like
+        # self.auth.get_user_by_token(user_id, signup_token)
+        # unfortunately the auth interface does not (yet) allow to manipulate
+        # signup tokens concisely
+        user, ts = User.get_by_auth_token(int(user_id), signup_token, 'signup')
+
+        if not user:
+            self.abort(404)
+    
+        # store user data in the session
+        self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
+
+        if verification_type == 'v':
+            # remove signup token, we don't want users to come back with an old link
+            User.delete_signup_token(user.get_id(), signup_token)
+
+        if not user.verified:
+            user.verified = True
+            user.put()
+            self.flash('Great your email address has been verified.', 'success')
+            self.redirect(self.uri_for('blog'))
+            return
+        elif verification_type == 'p':
+            # supply user to the page
+            params = {
+                'user': user,
+                'token': signup_token
+            }
+            self.render_template('resetpassword.html', params)
+        else:
+            logging.info('verification type not supported')
+            self.abort(404)
