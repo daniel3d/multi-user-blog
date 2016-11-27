@@ -15,8 +15,8 @@ ROUTES = [
  webapp2.Route('/login', ctr.UserLoginIndex, name='auth.login'),
  webapp2.Route('/logout', ctr.UserLogoutIndex, name='auth.logout'),
  webapp2.Route('/register', ctr.UserRegisterIndex, name='auth.register'),
- webapp2.Route('/password', ctr.UserSetPassword),
- webapp2.Route('/forgot', ctr.UserForgotPassword, name='auth.forgot'),
+ #webapp2.Route('/password', ctr.UserSetPassword),
+ #webapp2.Route('/forgot', ctr.UserForgotPassword, name='auth.forgot'),
  webapp2.Route('/<operation:v|p>/<user_id:\d+>-<token:.+>', 
  	handler=ctr.UserVerification, name='auth.verification')
 ]

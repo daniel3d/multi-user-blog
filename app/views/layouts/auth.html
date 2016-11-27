@@ -18,24 +18,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js"></script>
     <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
     
-    <!--build:css css/styles.min.css-->
     <link rel="stylesheet" href="/static/css/compiled/styles.css">
-    <!--endbuild-->
-
-    <style type="text/css">
-      body {
-          background: url('/static/images/pattern.svg') no-repeat center center fixed; 
-          -webkit-background-size: cover;
-             -moz-background-size: cover;
-               -o-background-size: cover;
-                  background-size: cover;
-
-      }
-    </style>
   
 </head>
 
-<body>
+<body class="auth">
 
   <div class="mdl-layout mdl-js-layout">
     <main class="mdl-layout__content auth animation">
@@ -55,6 +42,25 @@
       </div>
     </main>
   </div>
+
+  <!-- Flash Messages Toast --><script>
+      $(function(){
+          "use strict";
+
+          toastr.options.positionClass = "toast-top-center";
+          {% if messages %}
+              {% for message in messages %}
+                  {% if message[1] == 'error' %}
+                      toastr.error('{{ message[0] }}');
+                  {% elif message[1] == 'success' %}
+                      toastr.success('{{ message[0] }}');
+                  {% else %}
+                      toastr.warning('{{ message[0] }}');
+                  {% endif %}            
+              {% endfor %}
+          {% endif %}
+      });
+  </script>
 
 </body>
 

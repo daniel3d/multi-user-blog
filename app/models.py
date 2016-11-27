@@ -14,6 +14,7 @@ from support import time, db, random, config
 
 
 class Post(db.Model):
+    user = db.StringProperty()
     slug = db.StringProperty()
     ribbon = db.StringProperty()
     title = db.StringProperty(required=True)
@@ -27,8 +28,8 @@ class Post(db.Model):
             self.ribbon = random.choice(config.COLOR_PALETTE)
             self.save()
 
-        if self.ribbon[:1] is "#":
-            return 'style="background-color: %s;"' % self.ribbon
+        if self.ribbon[:1] == '#':
+            return 'style="background: %s;"' % self.ribbon
         else:
             return 'style="background: url(%s) center / cover;"' % self.ribbon
 

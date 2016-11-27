@@ -36,6 +36,28 @@ class Controller(webapp2.RequestHandler):
         """Shortcut to access the auth instance as a property."""
         return auth.get_auth()
 
+    @webapp2.cached_property
+    def user_info(self):
+        """Shortcut to access a subset of the user attributes that are stored
+        in the session.
+        The list of attributes to store in the session is specified in
+          config['webapp2_extras.auth']['user_attributes'].
+        :returns
+          A dictionary with most user information
+        """
+        return self.auth.get_user_by_session()
+
+    @webapp2.cached_property
+    def user(self):
+        """Shortcut to access the current logged in user.
+        Unlike user_info, it fetches information from the persistence layer and
+        returns an instance of the underlying model.
+        :returns
+            The instance of the user model associated to the logged in user.
+        """
+        u = self.user_info
+        return User.get_by_id(u['user_id']) if u else None
+
     def write(self, *a, **kw):
         """Send response to the browser."""
         self.response.out.write(*a, **kw)
@@ -123,6 +145,7 @@ class PostNew(PostIndex):
 
     @user_required
     def get(self):
+        logging.info(self.user.name)
         """Get the new post form."""
         self.view('post.edit.html', post=())
         return
@@ -138,8 +161,9 @@ class PostNew(PostIndex):
             "content": self.request.get('content').strip()
         }
         try:  # Try saving the post
-            post = Post(ribbon=p["ribbon"], markdown=p["markdown"],
-                        title=p["title"], content=p["content"], slug=p["slug"])
+            post = Post(ribbon=p["ribbon"], markdown=p["markdown"], 
+                user=self.user.name, title=p["title"], content=p["content"], 
+                slug=p["slug"])
             post.put()
         except Exception, error:
             self.flash(str(error), 'error')
@@ -273,26 +297,36 @@ class UserRegisterIndex(AuthIndex):
             self.view('verification.html', username=username, 
                 verification_url=verification_url)
 
-
-
-
+"""Login page."""
 
 
 class UserLoginIndex(AuthIndex):
+
     def get(self):
         self.view('login.html')
 
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+        try:
+            u = self.auth.get_user_by_password(username, password, remember=True, save_session=True)
+            self.redirect(self.uri_for('blog'))
+        except (InvalidAuthIdError, InvalidPasswordError) as e:
+            self.flash('Login failed for user %s because of %s' % (username, type(e)), 'error')
+            self.redirect(self.uri_for('auth.login'))
+
+"""Logout page."""
+
+
 class UserLogoutIndex(AuthIndex):
-    def get(self):
-        self.view('register.html')
 
-class UserSetPassword(AuthIndex):
     def get(self):
-        self.view('register.html')
+        self.auth.unset_session()
+        self.redirect(self.uri_for('auth.login'))
 
-class UserForgotPassword(AuthIndex): 
-    def get(self):
-        self.view('register.html')
+
+"""Email Verification page."""
+
 
 class UserVerification(AuthIndex):
     def get(self, *args, **kwargs):
@@ -306,7 +340,6 @@ class UserVerification(AuthIndex):
         # unfortunately the auth interface does not (yet) allow to manipulate
         # signup tokens concisely
         user, ts = User.get_by_auth_token(int(user_id), signup_token, 'signup')
-
         if not user:
             self.abort(404)
     
@@ -320,7 +353,7 @@ class UserVerification(AuthIndex):
         if not user.verified:
             user.verified = True
             user.put()
-            self.flash('Great your email address has been verified.', 'success')
+            self.flash('Great %s you can now enjoy the blog.' % user.name, 'success')
             self.redirect(self.uri_for('blog'))
             return
         elif verification_type == 'p':
