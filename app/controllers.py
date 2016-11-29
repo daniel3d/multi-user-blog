@@ -37,18 +37,19 @@ class Controller(webapp2.RequestHandler):
     @webapp2.cached_property
     def user_info(self):
         """Shortcut to access a subset of the user attributes that are stored.
+
         in the session.
         The list of attributes to store in the session is specified in
           config['webapp2_extras.auth']['user_attributes'].
         :returns
           A dictionary with most user information
         """
-
         return self.auth.get_user_by_session()
 
     @webapp2.cached_property
     def user(self):
         """Shortcut to access the current logged in user.
+
         Unlike user_info, it fetches information from the persistence layer and
         returns an instance of the underlying model.
         :returns
@@ -78,7 +79,7 @@ class Controller(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def session(self):
-        """Returns a session using the default cookie key."""
+        """Return a session using the default cookie key."""
         return self.session_store.get_session()
 
     @webapp2.cached_property
@@ -102,10 +103,9 @@ class Controller(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and helpers.check_secure_value(cookie_val)
 
-"""Home Controller."""
-
 
 class HomeIndex(Controller):
+    """Home Controller."""
 
     @user_required
     def get(self):
@@ -114,10 +114,9 @@ class HomeIndex(Controller):
         self.view('home.html', posts=posts)
         return
 
-"""Base controller for posts."""
-
 
 class PostIndex(Controller):
+    """Base controller for posts."""
 
     @user_required
     def get(self, id, slug=None):
@@ -137,21 +136,19 @@ class PostIndex(Controller):
         """Commonly used function to retrive post by id."""
         return db.get(db.Key.from_path('Post', int(post_id)))
 
-"""Create new post."""
-
 
 class PostNew(PostIndex):
+    """Create new post."""
 
     @user_required
     def get(self):
-        logging.info(self.user.name)
         """Get the new post form."""
         self.view('post.edit.html', post=())
         return
 
     @user_required
     def post(self):
-        """Save new Post to the database. """
+        """Save new Post to the database."""
         p = {
             "title": self.request.get('title').strip(),
             "slug": slugify(self.request.get('title')),
@@ -175,10 +172,9 @@ class PostNew(PostIndex):
         self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
         return
 
-"""Update existing post."""
-
 
 class PostEdit(PostNew):
+    """Update existing post."""
 
     @user_required
     def get(self, id):
@@ -209,13 +205,17 @@ class PostEdit(PostNew):
 
         return
 
-"""Delete existing post."""
-
 
 class PostDelete(PostIndex):
+    """Delete existing post."""
 
     @user_required
     def get(self, id):
+        """delete a post.
+
+        Todo:
+            * Move in post method.
+        """
         post = self.get_post_by_id(id)
         post.delete()
         self.flash('Post: %s was Deleted.' % post.title, 'warning')
@@ -223,10 +223,9 @@ class PostDelete(PostIndex):
         self.redirect(self.uri_for('blog'))
         return
 
-"""Base controller for Auth functionality."""
-
 
 class AuthIndex(Controller):
+    """Base controller for Auth functionality."""
 
     def valid_username(self, username):
         """Check if the username is valid."""
@@ -241,21 +240,20 @@ class AuthIndex(Controller):
         return not email or config.REGEXR_EMAIL.match(email)
 
 
-"""Register page."""
-
-
 class UserRegisterIndex(AuthIndex):
+    """Register page."""
 
     def get(self):
+        """Display register form."""
         self.view('register.html')
 
     def post(self):
+        """Try to save the new user."""
         valid = True
         username = self.request.get('username').strip()
         email = self.request.get('email').strip()
         password = self.request.get('password').strip()
         re_password = self.request.get('password-validate').strip()
-
         params = dict(username=username, email=email)
 
         if not self.valid_username(username):
@@ -276,7 +274,9 @@ class UserRegisterIndex(AuthIndex):
         if valid:
             uniques = ['email_address']
             success, info = User.create_user(username, uniques,
-                                             email_address=email, name=username, password_raw=password,
+                                             email_address=email,
+                                             name=username,
+                                             password_raw=password,
                                              verified=False)
             if not success:
                 if 'auth_id' in info:
@@ -292,20 +292,22 @@ class UserRegisterIndex(AuthIndex):
             user_id = info.get_id()
             token = User.create_signup_token(user_id)
             verification_url = self.uri_for('auth.verification', operation='v',
-                                            user_id=user_id, token=token, _full=True)
+                                            user_id=user_id, token=token,
+                                            _full=True)
 
             self.view('verification.html', username=username,
                       verification_url=verification_url)
 
-"""Login page."""
-
 
 class UserLoginIndex(AuthIndex):
+    """Login page."""
 
     def get(self):
+        """Show login form."""
         self.view('login.html')
 
     def post(self):
+        """Try to login the user."""
         username = self.request.get('username')
         password = self.request.get('password')
         try:
@@ -317,22 +319,21 @@ class UserLoginIndex(AuthIndex):
                        (username, type(e)), 'error')
             self.redirect(self.uri_for('auth.login'))
 
-"""Logout page."""
-
 
 class UserLogoutIndex(AuthIndex):
+    """Logout page."""
 
     def get(self):
+        """Destroy user sesion."""
         self.auth.unset_session()
         self.redirect(self.uri_for('auth.login'))
 
 
-"""Email Verification page."""
-
-
 class UserVerification(AuthIndex):
+    """Email Verification page."""
 
     def get(self, *args, **kwargs):
+        """Validate user email address."""
         user = None
         user_id = kwargs['user_id']
         signup_token = kwargs['token']
@@ -370,5 +371,4 @@ class UserVerification(AuthIndex):
             }
             self.render_template('resetpassword.html', params)
         else:
-            logging.info('verification type not supported')
             self.abort(404)

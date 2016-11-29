@@ -9,6 +9,7 @@ from webapp2_extras import security
 
 from support import time, db, random, config
 
+
 class Post(db.Model):
     """Posts db model."""
 
@@ -38,7 +39,7 @@ class User(webapp2_extras.appengine.auth.models.User):
 
     def set_password(self, raw_password):
         """Set the password for the current user.
-        
+
         :param raw_password:
             The raw password which will be hashed and stored
         """

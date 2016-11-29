@@ -8,16 +8,16 @@
  * To get App engine for python run `gcloud components install app-engine-python`
  * Install python libs `pip install -t lib -r requirements.txt`
  * Install node libs `npm install`
- * Run `gulp` your browser will open [http://localhost:8000](http://localhost:8000) for admin for the admin panel and [http://localhost:9999](http://localhost:9999) for the app
-
+ * Run `gulp` your browser will open [http://localhost:8000/instances](http://localhost:8000/instances) the app engine admin and [http://localhost:9999](http://localhost:9999) for the app
 
 ### Stuff used to make this:
 
-https://qrohlf.com/trianglify-generator/
-
- * [Simple Markdown Editor](https://simplemde.com) The blog edit page
+ * [Simple Markdown Editor](https://simplemde.com) The blog editor
  * [Webapp2](https://webapp2.readthedocs.io/en/latest) Python web framework compatible with Google App Engine’s 
  * [Google App Engine SDK](https://cloud.google.com/appengine/downloads?csw=1) The app engine
  * [Python Development Server](https://cloud.google.com/appengine/docs/python/tools/using-local-server) To emulate google app engine
+ * [Pep8online](http://pep8online.com/) Check the code is compatable with PEP8 standard
  * [PEP8 Autoformat](https://packagecontrol.io/packages/Python%20PEP8%20Autoformat) To format the files in PEP8 requirements
  * [PEP257 checker](https://pypi.python.org/pypi/pep257) Python docstring style checker
+ * [Trianglify](https://qrohlf.com/trianglify-generator/) Nice Background Image
+ * [Python Slugify](https://pypi.python.org/pypi/python-slugify) Generate url slugs from the post title
