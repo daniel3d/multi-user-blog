@@ -1,4 +1,5 @@
-# models.py
+# coding: utf-8
+"""The app models."""
 
 import webapp2_extras.appengine.auth.models
 
@@ -8,12 +9,9 @@ from webapp2_extras import security
 
 from support import time, db, random, config
 
-
-
-"""Posts db model."""
-
-
 class Post(db.Model):
+    """Posts db model."""
+
     user = db.StringProperty()
     slug = db.StringProperty()
     ribbon = db.StringProperty()
@@ -24,6 +22,7 @@ class Post(db.Model):
     updated_at = db.DateTimeProperty(auto_now=True)
 
     def get_ribbon_style(self):
+        """Get ribbon style url or colour."""
         if not self.ribbon:
             self.ribbon = random.choice(config.COLOR_PALETTE)
             self.save()
@@ -33,19 +32,23 @@ class Post(db.Model):
         else:
             return 'style="background: url(%s) center / cover;"' % self.ribbon
 
-"""Users db model."""
 
 class User(webapp2_extras.appengine.auth.models.User):
+    """Users db model."""
+
     def set_password(self, raw_password):
-        """Sets the password for the current user
+        """Set the password for the current user.
+        
         :param raw_password:
             The raw password which will be hashed and stored
         """
-        self.password = security.generate_password_hash(raw_password, length=12)
+        self.password = security.generate_password_hash(
+            raw_password, length=12)
 
     @classmethod
     def get_by_auth_token(cls, user_id, token, subject='auth'):
-        """Returns a user object based on a user ID and token.
+        """Return a user object based on a user ID and token.
+
         :param user_id:
             The user_id of the requesting user.
         :param token:

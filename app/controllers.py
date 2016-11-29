@@ -1,4 +1,5 @@
-# controllers.py
+# -*- coding: utf-8 -*-
+"""Define all controllers/handlers for the app."""
 
 import logging
 
@@ -12,25 +13,22 @@ from webapp2_extras.auth import InvalidAuthIdError
 from webapp2_extras.auth import InvalidPasswordError
 
 
-
 def user_required(handler):
-  """
-    Decorator that checks if there's a user associated with the current session.
-    Will also fail if there's no session present.
-  """
-  def check_login(self, *args, **kwargs):
-    auth = self.auth
-    if not auth.get_user_by_session():
-      self.redirect(self.uri_for('auth.login'), abort=True)
-    else:
-      return handler(self, *args, **kwargs)
+    """Decorator that checks if there's a user login."""
+    def check_login(self, *args, **kwargs):
+        """Redirect user too login page if not login."""
+        auth = self.auth
+        if not auth.get_user_by_session():
+            self.redirect(self.uri_for('auth.login'), abort=True)
+        else:
+            return handler(self, *args, **kwargs)
 
-  return check_login
-
-"""Base Controller functionality we need to reuse."""
+    return check_login
 
 
 class Controller(webapp2.RequestHandler):
+    """Base Controller functionality we need to reuse."""
+
     @webapp2.cached_property
     def auth(self):
         """Shortcut to access the auth instance as a property."""
@@ -38,13 +36,14 @@ class Controller(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def user_info(self):
-        """Shortcut to access a subset of the user attributes that are stored
+        """Shortcut to access a subset of the user attributes that are stored.
         in the session.
         The list of attributes to store in the session is specified in
           config['webapp2_extras.auth']['user_attributes'].
         :returns
           A dictionary with most user information
         """
+
         return self.auth.get_user_by_session()
 
     @webapp2.cached_property
@@ -161,16 +160,17 @@ class PostNew(PostIndex):
             "content": self.request.get('content').strip()
         }
         try:  # Try saving the post
-            post = Post(ribbon=p["ribbon"], markdown=p["markdown"], 
-                user=self.user.name, title=p["title"], content=p["content"], 
-                slug=p["slug"])
+            post = Post(ribbon=p["ribbon"], markdown=p["markdown"],
+                        user=self.user.name, title=p[
+                            "title"], content=p["content"],
+                        slug=p["slug"])
             post.put()
         except Exception, error:
             self.flash(str(error), 'error')
             self.view('post.edit.html', post=p)
             return
-        self.flash('Well done my friend! Post: %s was Saved.' 
-            % post.title, 'success')
+        self.flash('Well done my friend! Post: %s was Saved.'
+                   % post.title, 'success')
         # Redirect to the new post page
         self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
         return
@@ -203,8 +203,8 @@ class PostEdit(PostNew):
         post.markdown = self.request.get('markdown').strip()
         post.content = self.request.get('content').strip()
         post.put()
-        self.flash('Well done my friend! Post: %s was Updated.' 
-            % (post.title), 'success')
+        self.flash('Well done my friend! Post: %s was Updated.'
+                   % (post.title), 'success')
         self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
 
         return
@@ -261,7 +261,7 @@ class UserRegisterIndex(AuthIndex):
         if not self.valid_username(username):
             params['error_username'] = "That's not a valid username."
             valid = None
-        
+
         if not self.valid_password(password):
             params['error_password'] = "That wasn't a valid password."
             valid = None
@@ -272,17 +272,17 @@ class UserRegisterIndex(AuthIndex):
         if not self.valid_email(email):
             params['error_email'] = "That's not a valid email."
             valid = None
-        
+
         if valid:
             uniques = ['email_address']
             success, info = User.create_user(username, uniques,
-                email_address=email, name=username, password_raw=password, 
-                verified=False)
-            if not success: 
+                                             email_address=email, name=username, password_raw=password,
+                                             verified=False)
+            if not success:
                 if 'auth_id' in info:
                     params['error_username'] = "Username already taken."
                     valid = None
-                if 'email_address' in info: 
+                if 'email_address' in info:
                     params['error_email'] = "That E-mail address is in use."
                     valid = None
 
@@ -291,11 +291,11 @@ class UserRegisterIndex(AuthIndex):
         else:
             user_id = info.get_id()
             token = User.create_signup_token(user_id)
-            verification_url = self.uri_for('auth.verification', operation='v', 
-                user_id=user_id, token=token, _full=True)
-            
-            self.view('verification.html', username=username, 
-                verification_url=verification_url)
+            verification_url = self.uri_for('auth.verification', operation='v',
+                                            user_id=user_id, token=token, _full=True)
+
+            self.view('verification.html', username=username,
+                      verification_url=verification_url)
 
 """Login page."""
 
@@ -309,10 +309,12 @@ class UserLoginIndex(AuthIndex):
         username = self.request.get('username')
         password = self.request.get('password')
         try:
-            u = self.auth.get_user_by_password(username, password, remember=True, save_session=True)
+            u = self.auth.get_user_by_password(
+                username, password, remember=True, save_session=True)
             self.redirect(self.uri_for('blog'))
         except (InvalidAuthIdError, InvalidPasswordError) as e:
-            self.flash('Login failed for user %s because of %s' % (username, type(e)), 'error')
+            self.flash('Login failed for user %s because of %s' %
+                       (username, type(e)), 'error')
             self.redirect(self.uri_for('auth.login'))
 
 """Logout page."""
@@ -329,6 +331,7 @@ class UserLogoutIndex(AuthIndex):
 
 
 class UserVerification(AuthIndex):
+
     def get(self, *args, **kwargs):
         user = None
         user_id = kwargs['user_id']
@@ -342,18 +345,21 @@ class UserVerification(AuthIndex):
         user, ts = User.get_by_auth_token(int(user_id), signup_token, 'signup')
         if not user:
             self.abort(404)
-    
+
         # store user data in the session
-        self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
+        self.auth.set_session(
+            self.auth.store.user_to_dict(user), remember=True)
 
         if verification_type == 'v':
-            # remove signup token, we don't want users to come back with an old link
+            # remove signup token, we don't want users to come back with an old
+            # link
             User.delete_signup_token(user.get_id(), signup_token)
 
         if not user.verified:
             user.verified = True
             user.put()
-            self.flash('Great %s you can now enjoy the blog.' % user.name, 'success')
+            self.flash('Great %s you can now enjoy the blog.' %
+                       user.name, 'success')
             self.redirect(self.uri_for('blog'))
             return
         elif verification_type == 'p':

@@ -1,4 +1,5 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+"""Define all controllers/handlers for the app."""
 
 import os
 import time

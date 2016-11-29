@@ -1,4 +1,5 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+"""Initilize the blog application."""
 
 import router
 from support import webapp2, config
@@ -13,10 +14,10 @@ __version__ = '0.0.1'
 
 # Start the app
 application = webapp2.WSGIApplication(router.ROUTES, config={
-	'webapp2_extras.auth': {
-    	'user_model': 'app.models.User',
-    	'user_attributes': ['name']
-  	},
+    'webapp2_extras.auth': {
+        'user_model': 'app.models.User',
+        'user_attributes': ['name']
+    },
     'webapp2_extras.sessions': {
         'secret_key': config.APP_KEY
     }
