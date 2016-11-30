@@ -6,9 +6,12 @@
 
  * First make sure you have installed [Google Cloud SDK](https://cloud.google.com/sdk/docs)
  * To get App engine for python run `gcloud components install app-engine-python`
- * Install python libs `pip install -t lib -r requirements.txt`
+ * Install python libs by runing this command in the root of the folder `pip install -t lib -r requirements.txt`
  * Install node libs `npm install`
  * Run `gulp` your browser will open [http://localhost:8000/instances](http://localhost:8000/instances) the app engine admin and [http://localhost:9999](http://localhost:9999) for the app
+
+#### Common errors
+ * If you get error `ValueError: virtualenv: cannot access lib: No such virtualenv or site directory` make sure you run step 3 from the 'Installation instructions' run `pip install -t lib -r requirements.txt`
 
 ### Stuff used to make this:
 
