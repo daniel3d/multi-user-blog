@@ -209,10 +209,14 @@ footer .mdl-mini-footer--link-list a {
   padding: 0px !important;
   position:relative;
 
-  #submit {
+  #submit, #back {
     position: absolute;
     right: 0px;
     bottom: -50px;
+  }
+
+  #back{
+    right: 105px;
   }
 
   .CodeMirror-fullscreen, .editor-preview-side {

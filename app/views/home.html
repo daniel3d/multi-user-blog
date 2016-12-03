@@ -8,7 +8,7 @@
 			<div class="content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
 				{% for post in posts %}
 					<article class="ulog-card-wide mdl-card mdl-shadow--4dp">
-						<a href="/post/{{post.key().id()}}/{{ post.slug }}" class="mdl-card__title" {{ post.get_ribbon_style() | safe }}>
+						<a href="/post/{{post.key.id()}}/{{ post.slug }}" class="mdl-card__title" {{ post.get_ribbon_style() | safe }}>
 							<h2 class="mdl-card__title-text">{{ post.title }}</h2>
 						</a>
 						<div class="mdl-card__supporting-text">
@@ -17,23 +17,23 @@
 						<div class="mdl-card__menu under">
 							<div>
 								{{ post.created_at.strftime("%b %d, %Y") }} 
-								<i class="material-icons">fingerprint</i> {{ post.user }}
+								<i class="material-icons">fingerprint</i> {{ post.user.name }}
 							</div>
 						</div>
 						<div class="mdl-card__menu">
 							<!-- Right aligned menu below button -->
-							<button id="ulog-menu-lower-right-{{post.key().id()}}" class="mdl-button mdl-js-button mdl-button--icon">
+							<button id="ulog-menu-lower-right-{{post.key.id()}}" class="mdl-button mdl-js-button mdl-button--icon">
 								<i class="material-icons">more_vert</i>
 							</button>
 							<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" 
-								for="ulog-menu-lower-right-{{post.key().id()}}">
+								for="ulog-menu-lower-right-{{post.key.id()}}">
 								<li class="mdl-menu__item">
-									<a href="/post/{{post.key().id()}}/edit">
+									<a href="/post/{{post.key.id()}}/edit">
 										Edit
 									</a>
 								</li>
 								<li class="mdl-menu__item">
-									<a href="/post/{{post.key().id()}}/delete">
+									<a href="/post/{{post.key.id()}}/delete">
 										Delete
 									</a>
 								</li>

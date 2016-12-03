@@ -110,7 +110,7 @@ class HomeIndex(Controller):
     @user_required
     def get(self):
         """Display most reacent posts."""
-        posts = Post.all().order('-created_at')
+        posts = Post.query()
         self.view('home.html', posts=posts)
         return
 
@@ -134,7 +134,7 @@ class PostIndex(Controller):
 
     def get_post_by_id(self, post_id):
         """Commonly used function to retrive post by id."""
-        return db.get(db.Key.from_path('Post', int(post_id)))
+        return Post.get_by_id(int(post_id))
 
 
 class PostNew(PostIndex):
@@ -158,7 +158,7 @@ class PostNew(PostIndex):
         }
         try:  # Try saving the post
             post = Post(ribbon=p["ribbon"], markdown=p["markdown"],
-                        user=self.user.name, title=p[
+                        user=self.user, title=p[
                             "title"], content=p["content"],
                         slug=p["slug"])
             post.put()
@@ -169,7 +169,7 @@ class PostNew(PostIndex):
         self.flash('Well done my friend! Post: %s was Saved.'
                    % post.title, 'success')
         # Redirect to the new post page
-        self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
+        self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
         return
 
 
@@ -201,7 +201,7 @@ class PostEdit(PostNew):
         post.put()
         self.flash('Well done my friend! Post: %s was Updated.'
                    % (post.title), 'success')
-        self.redirect(self.uri_for('post', id=post.key().id(), slug=post.slug))
+        self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
 
         return
 
@@ -217,7 +217,7 @@ class PostDelete(PostIndex):
             * Move in post method.
         """
         post = self.get_post_by_id(id)
-        post.delete()
+        post.key.delete()
         self.flash('Post: %s was Deleted.' % post.title, 'warning')
         time.sleep(0.5)
         self.redirect(self.uri_for('blog'))

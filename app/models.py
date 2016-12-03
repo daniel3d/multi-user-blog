@@ -10,30 +10,6 @@ from webapp2_extras import security
 from support import time, db, random, config
 
 
-class Post(db.Model):
-    """Posts db model."""
-
-    user = db.StringProperty()
-    slug = db.StringProperty()
-    ribbon = db.StringProperty()
-    title = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
-    markdown = db.TextProperty()
-    created_at = db.DateTimeProperty(auto_now_add=True)
-    updated_at = db.DateTimeProperty(auto_now=True)
-
-    def get_ribbon_style(self):
-        """Get ribbon style url or colour."""
-        if not self.ribbon:
-            self.ribbon = random.choice(config.COLOR_PALETTE)
-            self.save()
-
-        if self.ribbon[:1] == '#':
-            return 'style="background: %s;"' % self.ribbon
-        else:
-            return 'style="background: url(%s) center / cover;"' % self.ribbon
-
-
 class User(webapp2_extras.appengine.auth.models.User):
     """Users db model."""
 
@@ -67,3 +43,27 @@ class User(webapp2_extras.appengine.auth.models.User):
             return user, timestamp
 
         return None, None
+
+
+class Post(ndb.Model):
+    """Posts db model."""
+
+    user = ndb.StructuredProperty(User)
+    slug = ndb.StringProperty()
+    ribbon = ndb.StringProperty()
+    title = ndb.StringProperty(required=True)
+    content = ndb.TextProperty(required=True)
+    markdown = ndb.TextProperty()
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
+    updated_at = ndb.DateTimeProperty(auto_now=True)
+
+    def get_ribbon_style(self):
+        """Get ribbon style url or colour."""
+        if not self.ribbon:
+            self.ribbon = random.choice(config.COLOR_PALETTE)
+            self.put()
+
+        if self.ribbon[:1] == '#':
+            return 'style="background: %s;"' % self.ribbon
+        else:
+            return 'style="background: url(%s) center / cover;"' % self.ribbon
