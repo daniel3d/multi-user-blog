@@ -57,6 +57,14 @@ class Post(ndb.Model):
     created_at = ndb.DateTimeProperty(auto_now_add=True)
     updated_at = ndb.DateTimeProperty(auto_now=True)
 
+    @property
+    def post_likes(self):
+        return PostLikes.query().filter(PostLikes.post == self.key)
+
+    @property
+    def post_comments(self):
+        return PostComments.query().order(-PostComments.created_at).filter(PostComments.post == self.key)
+
     def get_ribbon_style(self):
         """Get ribbon style url or colour."""
         if not self.ribbon:
@@ -67,3 +75,29 @@ class Post(ndb.Model):
             return 'style="background: %s;"' % self.ribbon
         else:
             return 'style="background: url(%s) center / cover;"' % self.ribbon
+
+    def check_author(self, user):
+        """Check if given user is the author of the post."""
+        return user.name == self.user.name
+
+    def liked_by(self, user):
+        """Check if given user already liked the post."""
+        return PostLikes.query().filter(PostLikes.post == self.key, PostLikes.user == user.key).fetch()
+
+
+
+class PostLikes(ndb.Model):
+    """Post Likes db model."""
+
+    user = ndb.KeyProperty(kind=User)
+    post = ndb.KeyProperty(kind=Post)
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
+
+
+class PostComments(ndb.Model):
+    """Post Comments db model."""
+
+    user = ndb.StructuredProperty(User)
+    post = ndb.KeyProperty(kind=Post)
+    comment = ndb.StringProperty(required=True)
+    created_at = ndb.DateTimeProperty(auto_now_add=True)

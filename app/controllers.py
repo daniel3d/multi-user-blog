@@ -3,7 +3,7 @@
 
 import logging
 
-from models import db, Post, User
+from models import db, Post, PostLikes, PostComments, User
 from support import viewer, helpers, config, slugify, webapp2, time
 
 from webapp2_extras import auth
@@ -22,7 +22,6 @@ def user_required(handler):
             self.redirect(self.uri_for('auth.login'), abort=True)
         else:
             return handler(self, *args, **kwargs)
-
     return check_login
 
 
@@ -65,7 +64,7 @@ class Controller(webapp2.RequestHandler):
     def view(self, template, **params):
         """Render template with given varibles."""
         view = viewer.get_template(template)
-        self.write(view.render(params, messages=self.flash_messages))
+        self.write(view.render(params, messages=self.flash_messages, curent_user=self.user))
 
     def dispatch(self):
         """Get a session store for this request."""
@@ -110,7 +109,7 @@ class HomeIndex(Controller):
     @user_required
     def get(self):
         """Display most reacent posts."""
-        posts = Post.query()
+        posts = Post.query().order(-Post.created_at).fetch(10)
         self.view('home.html', posts=posts)
         return
 
@@ -183,8 +182,14 @@ class PostEdit(PostNew):
         if not post:
             self.error(404)
             return
-        self.view('post.edit.html', post=post)
-        return
+        if post.check_author(self.user):
+            self.view('post.edit.html', post=post)
+            return
+        else:
+            self.flash('You cannot edit post: %s' % post.title, 'error')
+            self.redirect(self.uri_for('blog'))
+            return
+        
 
     @user_required
     def post(self, id):
@@ -193,16 +198,18 @@ class PostEdit(PostNew):
         if not post:
             self.error(404)
             return
-        post.title = self.request.get('title').strip()
-        post.slug = slugify(post.title).strip()
-        post.ribbon = self.request.get('ribbon').strip()
-        post.markdown = self.request.get('markdown').strip()
-        post.content = self.request.get('content').strip()
-        post.put()
-        self.flash('Well done my friend! Post: %s was Updated.'
-                   % (post.title), 'success')
+        if post.check_author(self.user):
+            post.title = self.request.get('title').strip()
+            post.slug = slugify(post.title).strip()
+            post.ribbon = self.request.get('ribbon').strip()
+            post.markdown = self.request.get('markdown').strip()
+            post.content = self.request.get('content').strip()
+            post.put()
+            self.flash('Well done my friend! Post: %s was Updated.'
+                       % (post.title), 'success')
+        else:
+            self.flash('You cannot edit post: %s' % post.title, 'error')
         self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
-
         return
 
 
@@ -217,10 +224,49 @@ class PostDelete(PostIndex):
             * Move in post method.
         """
         post = self.get_post_by_id(id)
-        post.key.delete()
-        self.flash('Post: %s was Deleted.' % post.title, 'warning')
-        time.sleep(0.5)
+        if post.check_author(self.user):
+            post.key.delete()
+            self.flash('Post: %s was Deleted.' % post.title, 'warning')
+            time.sleep(0.5)
+        else:
+            self.flash('You cannot delete post: %s' % post.title, 'error')
         self.redirect(self.uri_for('blog'))
+        return
+
+
+class PostLike(PostIndex):
+    """Like a post."""
+
+    @user_required
+    def get(self, id):
+        post = self.get_post_by_id(id)
+        if post.liked_by(self.user):
+            self.flash('You have liked this already.', 'warning')
+        elif post.check_author(self.user):
+            self.flash('You cannot like your post\'s.', 'error')
+        else:
+            PostLikes(post=post.key, user=self.user.key).put()
+            self.flash('Thank you for your like.', 'success')
+            time.sleep(0.5)
+            
+        self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
+        return
+
+class PostComment(PostIndex):
+    """Comment on post."""
+
+    @user_required
+    def post(self, id):
+        post = self.get_post_by_id(id)
+        comment = self.request.get('comment').strip()
+        if comment:
+            PostComments(post=post.key, user=self.user, 
+                comment=comment).put()
+            self.flash('Thank you for your comment.', 'success')
+            time.sleep(0.5)
+        else: 
+            self.flash('You cannot submit empty comment', 'error')
+        self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
         return
 
 
@@ -255,11 +301,9 @@ class UserRegisterIndex(AuthIndex):
         password = self.request.get('password').strip()
         re_password = self.request.get('password-validate').strip()
         params = dict(username=username, email=email)
-
         if not self.valid_username(username):
             params['error_username'] = "That's not a valid username."
             valid = None
-
         if not self.valid_password(password):
             params['error_password'] = "That wasn't a valid password."
             valid = None
@@ -285,7 +329,6 @@ class UserRegisterIndex(AuthIndex):
                 if 'email_address' in info:
                     params['error_email'] = "That E-mail address is in use."
                     valid = None
-
         if not valid:
             self.view('register.html', **params)
         else:
@@ -294,7 +337,6 @@ class UserRegisterIndex(AuthIndex):
             verification_url = self.uri_for('auth.verification', operation='v',
                                             user_id=user_id, token=token,
                                             _full=True)
-
             self.view('verification.html', username=username,
                       verification_url=verification_url)
 
@@ -338,7 +380,6 @@ class UserVerification(AuthIndex):
         user_id = kwargs['user_id']
         signup_token = kwargs['token']
         verification_type = kwargs['operation']
-
         # it should be something more concise like
         # self.auth.get_user_by_token(user_id, signup_token)
         # unfortunately the auth interface does not (yet) allow to manipulate
@@ -355,7 +396,6 @@ class UserVerification(AuthIndex):
             # remove signup token, we don't want users to come back with an old
             # link
             User.delete_signup_token(user.get_id(), signup_token)
-
         if not user.verified:
             user.verified = True
             user.put()

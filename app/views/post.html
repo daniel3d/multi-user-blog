@@ -5,14 +5,50 @@
   <main class="mdl-layout__content content__with--ribbon">
     <div class="container mdl-grid">
       <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-      <article class="single-post content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-        <div class="crumbs mdl-color-text--grey-500">
-          Posted by: {{ post.user }}
-        </div>
-        <h1>{{ post.title }}</h1>
-        <hr>
-        {{ post.content | safe }}
-      </article>
+      
+      <div class="content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+        <article class="single-post content mdl-color--white mdl-shadow--4dp">
+          <div class="crumbs mdl-color-text--grey-500">
+            Posted by: {{ post.user.name }} on {{ post.created_at.strftime("%b %d, %Y") }}
+          </div>
+          <div class="crumbs mdl-color-text--grey-500 status">
+            {% if post.check_author(curent_user) or post.liked_by(curent_user) %}
+              <i class="material-icons {% if post.liked_by(curent_user) %} liked {% endif %}">favorite</i>
+            {% else %}
+              <a href="/post/{{post.key.id()}}/like"><i class="material-icons">favorite</i></a>
+            {% endif %} {{ post.post_likes.count() }} &nbsp;
+            <i class="material-icons">comment</i>&nbsp; {{ post.post_comments.count() }} &nbsp;
+          </div>
+          <h1>{{ post.title }}</h1>
+          <hr>
+          {{ post.content | safe }}
+        </article>
+
+        
+        <article class="single-post content mdl-color--white mdl-shadow--4dp">
+          
+          <form action="/post/{{post.key.id()}}/comment" method="post" accept-charset="utf-8">
+            <textarea name="comment"></textarea>
+            <button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              &nbsp;&nbsp;Submit&nbsp;&nbsp;
+            </button>
+          </form>
+
+          <ul class="demo-list-three mdl-list">
+            {% for c in post.post_comments %}
+              <li class="mdl-list__item mdl-list__item--three-line">
+                <span class="mdl-list__item-primary-content">
+                  <i class="material-icons mdl-list__item-avatar">account_circle</i>
+                  <span>{{ c.user.name }} {{ c.created_at.strftime("at %b %d, %Y - %I:%M%p") }}</span>
+                  <span class="mdl-list__item-text-body">{{ c.comment }}</span>
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+
+        </article>
+      </div>
+
     </div>
   </main>
 {% endblock %}

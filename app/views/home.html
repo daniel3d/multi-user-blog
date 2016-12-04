@@ -17,28 +17,31 @@
 						<div class="mdl-card__menu under">
 							<div>
 								{{ post.created_at.strftime("%b %d, %Y") }} 
-								<i class="material-icons">fingerprint</i> {{ post.user.name }}
+								<i class="material-icons">fingerprint</i> {{ post.user.name }} &nbsp;
+								<i class="material-icons">favorite_border</i>&nbsp; {{ post.post_likes.count() }} &nbsp;
+								<i class="material-icons">chat</i>&nbsp; {{ post.post_comments.count() }}
 							</div>
 						</div>
 						<div class="mdl-card__menu">
-							<!-- Right aligned menu below button -->
-							<button id="ulog-menu-lower-right-{{post.key.id()}}" class="mdl-button mdl-js-button mdl-button--icon">
-								<i class="material-icons">more_vert</i>
-							</button>
-							<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" 
-								for="ulog-menu-lower-right-{{post.key.id()}}">
-								<li class="mdl-menu__item">
-									<a href="/post/{{post.key.id()}}/edit">
-										Edit
-									</a>
-								</li>
-								<li class="mdl-menu__item">
-									<a href="/post/{{post.key.id()}}/delete">
-										Delete
-									</a>
-								</li>
-							</ul>
-
+							{% if post.check_author(curent_user) %}
+								<!-- Right aligned menu below button -->
+								<button id="ulog-menu-lower-right-{{post.key.id()}}" class="mdl-button mdl-js-button mdl-button--icon">
+									<i class="material-icons">more_vert</i>
+								</button>
+								<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" 
+									for="ulog-menu-lower-right-{{post.key.id()}}">
+									<li class="mdl-menu__item">
+										<a href="/post/{{post.key.id()}}/edit">
+											Edit
+										</a>
+									</li>
+									<li class="mdl-menu__item">
+										<a href="/post/{{post.key.id()}}/delete">
+											Delete
+										</a>
+									</li>
+								</ul>
+							{% endif %}
 						</div>
 					</article>
 				{% endfor %}

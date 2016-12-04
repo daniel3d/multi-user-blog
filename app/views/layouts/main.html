@@ -36,8 +36,11 @@
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation -->
             <nav class="mdl-navigation">
+                <a class="mdl-navigation__link mdl-color-text--grey-800" id="user">
+                    <i class="material-icons">account_circle</i> {{ curent_user.name }}
+                </a>
                 <a href="/logout" class="mdl-navigation__link mdl-color-text--grey-800" id="auth">
-                    Logout
+                    <i class="material-icons">lock</i> Logout
                 </a>
             </nav>
           </div>

@@ -12,6 +12,10 @@ ROUTES = [
     webapp2.Route('/post/<id:[0-9]+>/edit', ctr.PostEdit, name='post.edit'),
     webapp2.Route('/post/<id:[0-9]+>/delete',
                   ctr.PostDelete, name='post.delete'),
+    webapp2.Route('/post/<id:[0-9]+>/like',
+                  ctr.PostLike, name='post.like'),
+    webapp2.Route('/post/<id:[0-9]+>/comment',
+                  ctr.PostComment, name='post.comment'),
     webapp2.Route('/post/<id:[0-9]+>/<slug:[+\-\w]+>',
                   ctr.PostIndex, name='post'),
     # Auth routers
