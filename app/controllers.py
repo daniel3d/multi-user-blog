@@ -64,7 +64,8 @@ class Controller(webapp2.RequestHandler):
     def view(self, template, **params):
         """Render template with given varibles."""
         view = viewer.get_template(template)
-        self.write(view.render(params, messages=self.flash_messages, curent_user=self.user))
+        self.write(view.render(
+            params, messages=self.flash_messages, curent_user=self.user))
 
     def dispatch(self):
         """Get a session store for this request."""
@@ -189,7 +190,6 @@ class PostEdit(PostNew):
             self.flash('You cannot edit post: %s' % post.title, 'error')
             self.redirect(self.uri_for('blog'))
             return
-        
 
     @user_required
     def post(self, id):
@@ -221,7 +221,7 @@ class PostDelete(PostIndex):
         """delete a post.
 
         Todo:
-            * Move in post method.
+            * Move in to post method.
         """
         post = self.get_post_by_id(id)
         if post.check_author(self.user):
@@ -239,6 +239,11 @@ class PostLike(PostIndex):
 
     @user_required
     def get(self, id):
+        """like a post.
+
+        Todo:
+            * Move in to post method.
+        """
         post = self.get_post_by_id(id)
         if post.liked_by(self.user):
             self.flash('You have liked this already.', 'warning')
@@ -248,23 +253,25 @@ class PostLike(PostIndex):
             PostLikes(post=post.key, user=self.user.key).put()
             self.flash('Thank you for your like.', 'success')
             time.sleep(0.5)
-            
+
         self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
         return
+
 
 class PostComment(PostIndex):
     """Comment on post."""
 
     @user_required
     def post(self, id):
+        """Add the comment."""
         post = self.get_post_by_id(id)
         comment = self.request.get('comment').strip()
         if comment:
-            PostComments(post=post.key, user=self.user, 
-                comment=comment).put()
+            PostComments(post=post.key, user=self.user,
+                         comment=comment).put()
             self.flash('Thank you for your comment.', 'success')
             time.sleep(0.5)
-        else: 
+        else:
             self.flash('You cannot submit empty comment', 'error')
         self.redirect(self.uri_for('post', id=post.key.id(), slug=post.slug))
         return

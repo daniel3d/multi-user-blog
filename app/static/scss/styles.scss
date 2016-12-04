@@ -245,6 +245,9 @@ footer .mdl-mini-footer--link-list a {
 
 article.single-post {
   padding: 80px 56px;
+  #submit {
+    float: right;
+  }
 }
 
 .status {
@@ -256,6 +259,10 @@ article.single-post {
   a:hover, .liked {
     color: rgb(255,64,129) !important;
   }
+}
+
+#comment {
+  width: 100%;
 }
 
 // Auth

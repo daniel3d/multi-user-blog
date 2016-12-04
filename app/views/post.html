@@ -28,7 +28,10 @@
         <article class="single-post content mdl-color--white mdl-shadow--4dp">
           
           <form action="/post/{{post.key.id()}}/comment" method="post" accept-charset="utf-8">
-            <textarea name="comment"></textarea>
+            <div id="comment" class="mdl-textfield mdl-js-textfield">
+              <textarea name="comment" class="mdl-textfield__input"></textarea>
+              <label class="mdl-textfield__label" for="comment">Comment...</label>
+            </div>
             <button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
               &nbsp;&nbsp;Submit&nbsp;&nbsp;
             </button>

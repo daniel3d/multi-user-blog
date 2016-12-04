@@ -59,10 +59,12 @@ class Post(ndb.Model):
 
     @property
     def post_likes(self):
+        """Get all likes for tis post."""
         return PostLikes.query().filter(PostLikes.post == self.key)
 
     @property
     def post_comments(self):
+        """Get all comments for tis post."""
         return PostComments.query().order(-PostComments.created_at).filter(PostComments.post == self.key)
 
     def get_ribbon_style(self):
