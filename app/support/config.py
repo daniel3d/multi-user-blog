@@ -3,6 +3,9 @@
 
 import re
 
+VERSION = '0.1.0'
+"""The app version."""
+
 APP_KEY = 'base64:VWRhY2l0eSBGdWxsIFN0YWNrIFdlYiBEZXZlbG9wZXIgTmFub2RlZ3JlZQ=='
 """Make sure this is updated when in production."""
 

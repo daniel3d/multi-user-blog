@@ -10,7 +10,7 @@ gae-init
 Udacity Build Multi User Blog.
 """
 
-__version__ = '0.0.1'
+__version__ = config.VERSION
 
 # Start the app
 application = webapp2.WSGIApplication(router.ROUTES, config={

@@ -65,7 +65,8 @@ class Controller(webapp2.RequestHandler):
         """Render template with given varibles."""
         view = viewer.get_template(template)
         self.write(view.render(
-            params, messages=self.flash_messages, curent_user=self.user))
+            params, messages=self.flash_messages, curent_user=self.user, 
+            version=config.VERSION))
 
     def dispatch(self):
         """Get a session store for this request."""
