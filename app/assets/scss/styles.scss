@@ -100,7 +100,7 @@ main {
   width: 100%;
   height: 400px;
   background-color: #9e9e9e;
-  background: url('/static/images/pattern.svg') center / cover;
+  background: url('/assets/images/pattern.svg') center / cover;
   -webkit-flex-shrink: 0;
       -ms-flex-negative: 0;
           flex-shrink: 0;
@@ -311,7 +311,7 @@ article.single-post {
 }
 
 body.auth {
-          background: url('/static/images/pattern.svg') no-repeat center center fixed; 
+          background: url('/assets/images/pattern.svg') no-repeat center center fixed; 
   -webkit-background-size: cover;
      -moz-background-size: cover;
        -o-background-size: cover;

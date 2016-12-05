@@ -3,6 +3,9 @@
 
 import re
 
+DEV = True
+"""If the app is in devolepment."""
+
 VERSION = '0.1.0'
 """The app version."""
 

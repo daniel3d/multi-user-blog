@@ -10,17 +10,17 @@ var gulp = require('gulp'),
 
 // Compile sass to css...
 gulp.task('sass', function() {
-	gulp.src('app/static/scss/**/*.scss')
-		.pipe(sass({includePaths: ['app/static/scss']}))
-		.pipe(gulp.dest('app/static/css/compiled'))
+	gulp.src('app/assets/scss/**/*.scss')
+		.pipe(sass({includePaths: ['app/assets/scss']}))
+		.pipe(gulp.dest('app/assets/css/compiled'))
 		.pipe(livereload());
 });
 
 // Watch for changes and run the live reload...
 gulp.task('watch', function() {
 	livereload.listen(35729);
-	gulp.watch('app/static/scss/**/*.scss', ['sass']);
-	gulp.watch('app/static/js/**/*.js', livereload.reload);
+	gulp.watch('app/assets/scss/**/*.scss', ['sass']);
+	gulp.watch('app/assets/js/**/*.js', livereload.reload);
 	gulp.watch('app/views/**/*.html', livereload.reload);
 	gulp.watch('app/*.py', livereload.reload);
 });

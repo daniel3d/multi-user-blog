@@ -12,6 +12,6 @@ indexes:
 
 - kind: PostComments
   properties:
-  - name: post
+  - name: post_key
   - name: created_at
     direction: desc
