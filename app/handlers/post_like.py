@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """The like post Handler."""
 
-import app.helpers as helpers
-
-from post import PostHandler
+from post import time, user_required, PostLike, PostHandler
 
 
 class LikePostHandler(PostHandler):
     """Like a post."""
 
-    @helpers.user_required
+    @user_required
     def get(self, id):
         """like a post.
 
@@ -23,7 +21,7 @@ class LikePostHandler(PostHandler):
         elif post.check_author(self.user):
             self.flash('You cannot like your post\'s.', 'error')
         else:
-            PostLikes(post_key=post.key, user_key=self.user.key).put()
+            PostLike(post_key=post.key, user_key=self.user.key).put()
             self.flash('Thank you for your like.', 'success')
             time.sleep(0.5)
 

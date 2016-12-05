@@ -6,7 +6,7 @@ import re
 DEV = True
 """If the app is in devolepment."""
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 """The app version."""
 
 APP_KEY = 'base64:VWRhY2l0eSBGdWxsIFN0YWNrIFdlYiBEZXZlbG9wZXIgTmFub2RlZ3JlZQ=='

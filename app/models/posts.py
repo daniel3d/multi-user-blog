@@ -4,8 +4,8 @@
 import random
 import app.config as config
 
-from post_like import PostLike
-from post_comment import PostComment
+from post_likes import PostLike
+from post_comments import PostComment
 from google.appengine.ext import ndb
 
 
@@ -24,12 +24,12 @@ class Post(ndb.Model):
     @property
     def post_likes(self):
         """Get all likes for tis post."""
-        return PostLike.query().filter(PostLikes.post_key == self.key)
+        return PostLike.query().filter(PostLike.post_key == self.key)
 
     @property
     def post_comments(self):
         """Get all comments for tis post."""
-        return PostComment.query().order(-PostComments.created_at).filter(
+        return PostComment.query().order(-PostComment.created_at).filter(
             PostComment.post_key == self.key)
 
     @property
@@ -54,5 +54,5 @@ class Post(ndb.Model):
 
     def liked_by(self, u):
         """Check if given user already liked the post."""
-        return PostLike.query().filter(PostLikes.post_key == self.key, 
-            PostLike.user_key == u.key).fetch()
+        return PostLike.query().filter(PostLike.post_key == self.key,
+                                       PostLike.user_key == u.key).fetch()

@@ -217,6 +217,9 @@ article.single-post {
 #comment {
   width: 100%; }
 
+.comments-list-three {
+  margin-top: 40px; }
+
 .auth {
   display: flex;
   align-items: center;

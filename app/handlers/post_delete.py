@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """The delete post Handler."""
 
-import app.helpers as helpers
-
-from post import PostHandler
+from post import time, user_required, PostHandler
 
 
 class DeletePostHandler(PostHandler):
     """Delete existing post."""
 
-    @helpers.user_required
+    @user_required
     def get(self, id):
         """delete a post.
 

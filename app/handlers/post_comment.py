@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-"""The delete post Handler."""
+"""The comment post Handler."""
 
-import app.helpers as helpers
-
-from app.models import PostComment
-from post import PostHandler
+from post import time, user_required, PostComment, PostHandler
 
 
 class CommentPostHandler(PostHandler):
@@ -17,7 +14,7 @@ class CommentPostHandler(PostHandler):
         comment = self.request.get('comment').strip()
         if comment:
             PostComment(post_key=post.key, user_key=self.user.key,
-                         comment=comment).put()
+                        comment=comment).put()
             self.flash('Thank you for your comment.', 'success')
             time.sleep(0.5)
         else:

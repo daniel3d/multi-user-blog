@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 """The new post Handler."""
 
-import app.helpers as helpers
-
-from app.models import Post
-from post import PostHandler
+from post import user_required, slugify, Post, PostHandler
 
 
 class NewPostHandler(PostHandler):
     """Create new post."""
 
-    @helpers.user_required
+    @user_required
     def get(self):
         """Get the new post form."""
         self.view('post.edit.html', post=())
         return
 
-    @helpers.user_required
+    @user_required
     def post(self):
         """Save new Post to the database."""
         p = {

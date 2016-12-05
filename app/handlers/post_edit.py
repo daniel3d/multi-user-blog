@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """The edit post Handler."""
 
-import app.helpers as helpers
-
-from post import PostHandler
+from post import user_required, slugify, PostHandler
 
 
 class EditPostHandler(PostHandler):
     """Update existing post."""
 
-    @helpers.user_required
+    @user_required
     def get(self, id):
         """Open edit form for the the post."""
         post = self.get_post_by_id(id)
@@ -26,7 +24,7 @@ class EditPostHandler(PostHandler):
             self.redirect(self.uri_for('blog'))
             return
 
-    @helpers.user_required
+    @user_required
     def post(self, id):
         """Submit the eddited post."""
         post = self.get_post_by_id(id)

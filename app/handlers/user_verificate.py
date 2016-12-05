@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-"""The user Handler."""
+"""The verification user Handler."""
 
-import app.config as config
-import app.helpers as helpers
-
-from user import UserHandler
+from user import User, UserHandler
 
 
 class VerificateUserHandler(UserHandler):

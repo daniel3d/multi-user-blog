@@ -2,8 +2,10 @@
 """The base Handler all the handlers extend from this."""
 
 import os
+import time
 import jinja2
 import webapp2
+import app.config as config
 import app.helpers as helpers
 
 from app.models import User
@@ -14,6 +16,18 @@ from webapp2_extras import sessions
 viewer = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(
     os.path.dirname(__file__), '..', 'views')), autoescape=True)
 """Jinja2 template viwer that we can use in our controllers."""
+
+
+def user_required(handler):
+    """Decorator that checks if there's a user login."""
+    def check_login(self, *args, **kwargs):
+        """Redirect user too login page if not login."""
+        auth = self.auth
+        if not auth.get_user_by_session():
+            self.redirect(self.uri_for('auth.login'), abort=True)
+        else:
+            return handler(self, *args, **kwargs)
+    return check_login
 
 
 class BaseHandler(webapp2.RequestHandler):

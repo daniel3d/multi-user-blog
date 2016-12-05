@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 """The home Handler."""
 
-import app.helpers as helpers
-
+from base import user_required, BaseHandler
 from app.models import Post
-from base import BaseHandler
 
 
-class HomeHandler(BaseHandler):
+class BlogHandler(BaseHandler):
     """Home Handler."""
 
-    @helpers.user_required
+    @user_required
     def get(self):
         """Display most reacent posts."""
         posts = Post.query().order(-Post.created_at).fetch(10)

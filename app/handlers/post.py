@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 """The post Handler."""
 
-import app.helpers as helpers
-
-from app.models import Post
-from base import BaseHandler
+from slugify import slugify
+from base import time, user_required, BaseHandler
+from app.models import Post, PostLike, PostComment
 
 
 class PostHandler(BaseHandler):
     """Base controller for posts."""
 
-    @helpers.user_required
+    @user_required
     def get(self, id, slug=None):
         """Display existing post."""
         post = self.get_post_by_id(id)

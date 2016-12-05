@@ -2,8 +2,8 @@
 """The user Handler."""
 
 import app.config as config
-import app.helpers as helpers
 
+from app.models import User
 from base import BaseHandler
 
 
