@@ -2,6 +2,8 @@
 
 ## For Udacity Full Stack Web Developer Nanodegree
 
+![screenshot](//c1.staticflickr.com/3/2941/32948089840_deb446c76f_b.jpg)
+
 #### Installation instructions
 
  * First make sure you have installed [Google Cloud SDK](https://cloud.google.com/sdk/docs)
