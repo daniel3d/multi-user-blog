@@ -2,7 +2,7 @@
 
 ## For Udacity Full Stack Web Developer Nanodegree
 
-![screenshot](//c1.staticflickr.com/3/2941/32948089840_deb446c76f_b.jpg)
+![screenshot](https://c1.staticflickr.com/3/2941/32948089840_deb446c76f_b.jpg)
 
 #### Installation instructions
 
